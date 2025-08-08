@@ -1,21 +1,33 @@
----
-title: "Overall metagenome statistics"
-author: "Sam Barnett"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output:
-  github_document:
-    toc: true
-    toc_depth: 2
----
+Overall metagenome statistics
+================
+Sam Barnett
+08 August, 2025
+
+- [Introduction](#introduction)
+  - [Librarys and global variables](#librarys-and-global-variables)
+  - [Metadata](#metadata)
+- [Metagenome coverage and
+  diversity](#metagenome-coverage-and-diversity)
+- [Estimated genome size](#estimated-genome-size)
+- [Taxonomy](#taxonomy)
+  - [Read based taxonomy](#read-based-taxonomy)
+  - [Contig taxonomy](#contig-taxonomy)
+- [Sequencing stats for resource
+  announcement](#sequencing-stats-for-resource-announcement)
+- [Session info](#session-info)
 
 # Introduction
 
-Included here is the inital analysis of the metagenome data. We are specifically examining broad trends from reads such as estimated genome size, diversity, and taxonomic makeup.
+Included here is the inital analysis of the metagenome data. We are
+specifically examining broad trends from reads such as estimated genome
+size, diversity, and taxonomic makeup.
 
 ## Librarys and global variables
 
-Here are some libraries used in this analysis and the global varaibles that will be used throughout. Mostly variables for consistent plotting.
-```{r, warning=FALSE, message=FALSE}
+Here are some libraries used in this analysis and the global varaibles
+that will be used throughout. Mostly variables for consistent plotting.
+
+``` r
 # Libraries for data
 library(dplyr)
 library(phyloseq)
@@ -71,14 +83,13 @@ present_theme = theme_bw() +
         legend.title = element_text(size=12, hjust=0.5),
         strip.text = element_text(size=10),
         plot.title = element_text(size=14, hjust=0.5))
-
-
 ```
 
 ## Metadata
 
 Read in the metadata.
-```{r, warning=FALSE, message=FALSE}
+
+``` r
 # Sample metadata
 sample.meta = read_xlsx("/Users/sambarnett/Documents/Shade_lab/Centralia_project/Centralia_soil_metadata.xlsx", 
                         sheet = "Metagenomic_samples", na="NA") %>%
@@ -98,13 +109,20 @@ mapped_reads.df = read.table("/Users/sambarnett/Documents/Shade_lab/Centralia_pr
                           header=TRUE, sep="\t", comment.char = "", quote = "")
 ```
 
-
 # Metagenome coverage and diversity
 
-Lets see how well we sequenced these metagenomes. We used nonpareil to estimate the coverage of these metagenomes as well as estimate diversity. First lets see how well covered these metagenomes are.
-```{r, warning=FALSE, message=FALSE, fig.height=3.5, fig.width=7}
+Lets see how well we sequenced these metagenomes. We used nonpareil to
+estimate the coverage of these metagenomes as well as estimate
+diversity. First lets see how well covered these metagenomes are.
+
+``` r
 # Read in the the nonpareil data. These are separate files.
 nonpareil.full = Nonpareil.set(sample.meta$nonpareil_file)
+```
+
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
 # First look at coverage
 nonpareil.df = data.frame()
 for (i in seq(1, length(nonpareil.full@np.curves))){
@@ -130,9 +148,11 @@ ggplot(data=nonpareil.df, aes(x=effort/1000000000/2, y=coverage)) +
   facet_wrap(~FireClassification)
 ```
 
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+
 Now lets take a look at the diversity.
 
-```{r, warning=FALSE, message=FALSE, fig.height=3.5, fig.width=7}
+``` r
 # Now look at diversity
 nonpareil.sum = data.frame(summary(nonpareil.full)) %>%
   tibble::rownames_to_column(var="SequenceID") %>%
@@ -143,7 +163,21 @@ nonpareil_diversity_FC.wilcox = wilcox.test(x=filter(nonpareil.sum, FireClassifi
                                             y=filter(nonpareil.sum, FireClassification=="FireAffected")$diversity,
                                             conf.int=TRUE, conf.level=0.95)
 nonpareil_diversity_FC.wilcox
+```
 
+    ## 
+    ##  Wilcoxon rank sum exact test
+    ## 
+    ## data:  filter(nonpareil.sum, FireClassification == "Reference")$diversity and filter(nonpareil.sum, FireClassification == "FireAffected")$diversity
+    ## W = 816, p-value = 5.543e-06
+    ## alternative hypothesis: true location shift is not equal to 0
+    ## 95 percent confidence interval:
+    ##  0.2578372 1.0135277
+    ## sample estimates:
+    ## difference in location 
+    ##              0.4918761
+
+``` r
 # Plot by fire classification
 nonpareil_diversity_FC.plot = ggplot(data=nonpareil.sum, aes(x=FireClassification, y=diversity)) +
   geom_boxplot(outlier.shape=NA) +
@@ -172,8 +206,11 @@ cowplot::plot_grid(nonpareil_diversity_FC.plot,
                    rel_widths = c(0.5, 1))
 ```
 
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
 Lets also see how diversity changes over time.
-```{r, warning=FALSE, message=FALSE, fig.height=5, fig.width=7}
+
+``` r
 # Compare across time
 nonpareil_diversity_time.model.df = data.frame()
 for (FC in c("FireAffected", "Reference")){
@@ -184,8 +221,20 @@ for (FC in c("FireAffected", "Reference")){
                              mutate(FireClassification = FC))
 }
 nonpareil_diversity_time.model.df
+```
 
+    ##        factor         Value   Std.Error DF    t.value      p.value
+    ## 1 (Intercept) -471.84012062 80.20778440 41 -5.8827223 6.352568e-07
+    ## 2        Year    0.24392667  0.03974602 41  6.1371340 2.760814e-07
+    ## 3 (Intercept)  -16.47818088 45.16621688 16 -0.3648342 7.200126e-01
+    ## 4        Year    0.01868129  0.02238224 16  0.8346479 4.162047e-01
+    ##   FireClassification
+    ## 1       FireAffected
+    ## 2       FireAffected
+    ## 3          Reference
+    ## 4          Reference
 
+``` r
 # Get regressions for plot
 nonpareil_diversity_time.model.reg = nonpareil_diversity_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
@@ -216,14 +265,15 @@ ggplot(data=nonpareil.sum, aes(x=Year, y=diversity)) +
   facet_wrap(~FireClassification) +
   guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2),
          linetype=guide_legend(override.aes=list(color="black")))
-
 ```
+
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 # Estimated genome size
 
 We used microbecensus to estimate average genome size.
 
-```{r, warning=FALSE, message=FALSE, fig.height=3.5, fig.width=7}
+``` r
 # Import microbecensus data
 microbe_census.df = read.table("/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Data/microbecensus_comb_out.txt",
                                header=TRUE, sep="\t") %>%
@@ -238,7 +288,21 @@ Gsize_FC.wilcox = wilcox.test(x=filter(microbe_census.df, FireClassification=="R
                               y=filter(microbe_census.df, FireClassification=="FireAffected")$average_genome_size_Mbp,
                               conf.int=TRUE, conf.level=0.95)
 Gsize_FC.wilcox
+```
 
+    ## 
+    ##  Wilcoxon rank sum exact test
+    ## 
+    ## data:  filter(microbe_census.df, FireClassification == "Reference")$average_genome_size_Mbp and filter(microbe_census.df, FireClassification == "FireAffected")$average_genome_size_Mbp
+    ## W = 856, p-value = 1.838e-07
+    ## alternative hypothesis: true location shift is not equal to 0
+    ## 95 percent confidence interval:
+    ##  0.3404824 0.8422117
+    ## sample estimates:
+    ## difference in location 
+    ##              0.5518273
+
+``` r
 Gsize_FC.plot = ggplot(data=microbe_census.df, aes(x=FireClassification, y=average_genome_size_Mbp)) +
   geom_boxplot(outlier.shape = NA) +
   geom_jitter(aes(fill=SiteID, shape=FireClassification), size=3, width=0.25, height=0) +
@@ -265,7 +329,34 @@ Gsize_temp.model.reg.df = data.frame(summary(Gsize_temp.model)$tTable) %>%
   tidyr::spread(key=factor, value = Value) %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 summary(Gsize_temp.model)
+```
 
+    ## Linear mixed-effects model fit by REML
+    ##   Data: microbe_census.df 
+    ##        AIC      BIC    logLik
+    ##   68.19567 77.01444 -30.09783
+    ## 
+    ## Random effects:
+    ##  Formula: ~1 | SiteID
+    ##         (Intercept)  Residual
+    ## StdDev:   0.1749679 0.3217183
+    ## 
+    ## Fixed effects:  average_genome_size_Mbp ~ CoreTemp_C 
+    ##                 Value  Std.Error DF  t-value p-value
+    ## (Intercept)  6.806706 0.16640912 58 40.90344       0
+    ## CoreTemp_C  -0.050666 0.00655782 58 -7.72597       0
+    ##  Correlation: 
+    ##            (Intr)
+    ## CoreTemp_C -0.914
+    ## 
+    ## Standardized Within-Group Residuals:
+    ##         Min          Q1         Med          Q3         Max 
+    ## -1.87463339 -0.67791736 -0.07303353  0.54488834  2.41864288 
+    ## 
+    ## Number of Observations: 69
+    ## Number of Groups: 10
+
+``` r
 ## Plot
 Gsize_temp.plot = ggplot(data=microbe_census.df, aes(x=CoreTemp_C, y=average_genome_size_Mbp)) +
   geom_point(aes(fill=SiteID, shape=FireClassification), size=3) +
@@ -288,9 +379,11 @@ cowplot::plot_grid(Gsize_FC.plot,
                    rel_widths = c(0.5, 1))
 ```
 
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
 Now lets look at this over time like before
 
-```{r, warning=FALSE, message=FALSE, fig.height=5, fig.width=7}
+``` r
 # Compare across time
 Gsize_time.model.df = data.frame()
 for (FC in c("FireAffected", "Reference")){
@@ -301,7 +394,20 @@ for (FC in c("FireAffected", "Reference")){
                              mutate(FireClassification = FC))
 }
 Gsize_time.model.df
+```
 
+    ##        factor         Value   Std.Error DF     t.value      p.value
+    ## 1 (Intercept) -2.612163e+02 51.68421550 41 -5.05408215 9.423397e-06
+    ## 2        Year  1.321400e-01  0.02561152 41  5.15939755 6.707101e-06
+    ## 3 (Intercept)  2.564951e+00 51.83020546 16  0.04948757 9.611433e-01
+    ## 4        Year  1.740852e-03  0.02568457 16  0.06777813 9.468020e-01
+    ##   FireClassification
+    ## 1       FireAffected
+    ## 2       FireAffected
+    ## 3          Reference
+    ## 4          Reference
+
+``` r
 ## Get regression for plot
 Gsize_time.model.reg = Gsize_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
@@ -332,15 +438,18 @@ ggplot(data=microbe_census.df, aes(x=Year, y=average_genome_size_Mbp)) +
   facet_wrap(~FireClassification) +
   guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2),
          linetype=guide_legend(override.aes=list(color="black")))
-
 ```
 
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 # Taxonomy
 
 ## Read based taxonomy
-We estimated read based taxonomy using braken Lets take a look at the broad taxonomic breakdown of these metagenomes.
-```{r, warning=FALSE, message=FALSE, fig.height=5, fig.width=10}
+
+We estimated read based taxonomy using braken Lets take a look at the
+broad taxonomic breakdown of these metagenomes.
+
+``` r
 # Read in taxonomy IDs and their taxonomy breakdown used by braken. We will use these to link the taxonomy IDs from the braken output to taxonomy.
 Main_taxonomy.df = read.table("/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Data/Annotations/main_taxonomic_ranks.txt",
                               header=TRUE, sep="\t", quote="", comment.char="") %>%
@@ -391,13 +500,16 @@ ggplot(data=bracken.df, aes(x=as.factor(Year), y=percent_class_reads)) +
   present_theme +
   theme(axis.text.x = element_text(angle=90)) +
   facet_wrap(~FireClassification*SiteID, nrow=2)
-
 ```
+
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ## Contig taxonomy
 
-From the assembled contigs we used kraken to taxonomically assign. Lets see the taxonomic breakdown of these assemblies.
-```{r, warning=FALSE, message=FALSE, fig.height=5, fig.width=7}
+From the assembled contigs we used kraken to taxonomically assign. Lets
+see the taxonomic breakdown of these assemblies.
+
+``` r
 # Read in the taxonomy from the IDs
 Main_taxonomy.df = read.table("/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Data/Annotations/main_taxonomic_ranks.txt",
                               header=TRUE, sep="\t", quote="", comment.char="") %>%
@@ -470,17 +582,20 @@ contig_tax.plot = ggplot(data=contig_tax.sum, aes(x=as.factor(Year), y=percent_c
   theme(axis.text.x = element_text(angle=90)) +
   facet_wrap(~FireClassification*SiteID, nrow=2)
 contig_tax.plot
+```
 
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+``` r
 #ggsave(contig_tax.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Resource announcement/Fig1.tiff",
 #       device="tiff", width=7, height=5, units="in", bg="white")
-
 ```
 
 # Sequencing stats for resource announcement
 
 Here are some sequencing stats used for the resource announcement.
 
-```{r, warning=FALSE, message=FALSE}
+``` r
 MRA.df = sample.meta %>%
   mutate(Collection_date = paste(Day, "Oct", Year)) %>%
   select(SequenceID, SiteID, Year, Collection_date, CoreTemp_C, FireClassification) %>%
@@ -490,13 +605,81 @@ MRA.df = sample.meta %>%
   arrange(SiteID, Year) %>%
   select(-Year)
 MRA.df
+```
+
+    ## # A tibble: 69 × 10
+    ##    SequenceID         SiteID Collection_date CoreTemp_C FireClassification   N50
+    ##    <chr>              <chr>  <chr>                <dbl> <chr>              <int>
+    ##  1 Cen08_13102015_R1… Cen08  13 Oct 2015           12.7 Reference           2279
+    ##  2 Cen08_12102016_R1… Cen08  12 Oct 2016           11.1 Reference           2683
+    ##  3 Cen08_21102017_R1… Cen08  21 Oct 2017           13.3 Reference           2816
+    ##  4 Cen08_04102018_R1… Cen08  4 Oct 2018            16.1 Reference           3067
+    ##  5 Cen08_15102020_R1… Cen08  15 Oct 2020           11.6 Reference           3389
+    ##  6 Cen08_06102021_R1… Cen08  6 Oct 2021            15.8 Reference           3720
+    ##  7 Cen11_12102015_R1… Cen11  12 Oct 2015           27.4 FireAffected        2024
+    ##  8 Cen11_11102016_R1… Cen11  11 Oct 2016           25.1 FireAffected        2221
+    ##  9 Cen11_20102017_R1… Cen11  20 Oct 2017           23.2 FireAffected        2358
+    ## 10 Cen11_03102018_R1… Cen11  3 Oct 2018            21.8 FireAffected        2626
+    ## # ℹ 59 more rows
+    ## # ℹ 4 more variables: Contig_count <int>, Total_length <int>,
+    ## #   Longest_contig <int>, total_reads <int>
+
+``` r
 #write.table(MRA.df, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Resource announcement/Table1.txt",
 #            sep="\t", quote=FALSE, row.names = FALSE)
 ```
 
 # Session info
 
-```{r}
+``` r
 sessionInfo()
 ```
 
+    ## R version 4.4.1 (2024-06-14)
+    ## Platform: aarch64-apple-darwin20
+    ## Running under: macOS Ventura 13.0.1
+    ## 
+    ## Matrix products: default
+    ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+    ## LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+    ## 
+    ## locale:
+    ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+    ## 
+    ## time zone: America/Detroit
+    ## tzcode source: internal
+    ## 
+    ## attached base packages:
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
+    ## 
+    ## other attached packages:
+    ##  [1] ggplot2_3.5.2   Nonpareil_3.5.3 picante_1.8.2   nlme_3.1-166   
+    ##  [5] vegan_2.6-8     lattice_0.22-6  permute_0.9-7   readxl_1.4.3   
+    ##  [9] ape_5.8         phyloseq_1.48.0 dplyr_1.1.4    
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##  [1] ade4_1.7-22             tidyselect_1.2.1        farver_2.1.2           
+    ##  [4] Biostrings_2.72.1       fastmap_1.2.0           digest_0.6.37          
+    ##  [7] lifecycle_1.0.4         cluster_2.1.6           survival_3.7-0         
+    ## [10] magrittr_2.0.3          compiler_4.4.1          rlang_1.1.4            
+    ## [13] tools_4.4.1             igraph_2.0.3            utf8_1.2.4             
+    ## [16] yaml_2.3.10             data.table_1.16.0       knitr_1.48             
+    ## [19] labeling_0.4.3          plyr_1.8.9              withr_3.0.1            
+    ## [22] purrr_1.0.2             BiocGenerics_0.50.0     grid_4.4.1             
+    ## [25] stats4_4.4.1            fansi_1.0.6             multtest_2.60.0        
+    ## [28] biomformat_1.32.0       colorspace_2.1-1        Rhdf5lib_1.26.0        
+    ## [31] scales_1.3.0            iterators_1.0.14        MASS_7.3-61            
+    ## [34] cli_3.6.3               rmarkdown_2.29          crayon_1.5.3           
+    ## [37] generics_0.1.3          rstudioapi_0.16.0       httr_1.4.7             
+    ## [40] reshape2_1.4.4          rhdf5_2.48.0            stringr_1.5.1          
+    ## [43] zlibbioc_1.50.0         splines_4.4.1           parallel_4.4.1         
+    ## [46] cellranger_1.1.0        XVector_0.44.0          vctrs_0.6.5            
+    ## [49] Matrix_1.7-0            jsonlite_1.8.8          IRanges_2.38.1         
+    ## [52] S4Vectors_0.42.1        foreach_1.5.2           tidyr_1.3.1            
+    ## [55] glue_1.7.0              codetools_0.2-20        cowplot_1.1.3          
+    ## [58] stringi_1.8.4           gtable_0.3.5            GenomeInfoDb_1.40.1    
+    ## [61] UCSC.utils_1.0.0        munsell_0.5.1           tibble_3.2.1           
+    ## [64] pillar_1.9.0            htmltools_0.5.8.1       rhdf5filters_1.16.0    
+    ## [67] GenomeInfoDbData_1.2.12 R6_2.5.1                evaluate_0.24.0        
+    ## [70] Biobase_2.64.0          highr_0.11              Rcpp_1.0.13            
+    ## [73] mgcv_1.9-1              xfun_0.52               pkgconfig_2.0.3
