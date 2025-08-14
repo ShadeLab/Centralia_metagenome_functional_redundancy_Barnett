@@ -1,14 +1,19 @@
 Overall metagenome statistics
 ================
 Sam Barnett
-08 August, 2025
+14 August, 2025
 
 - [Introduction](#introduction)
   - [Librarys and global variables](#librarys-and-global-variables)
   - [Metadata](#metadata)
 - [Metagenome coverage and
   diversity](#metagenome-coverage-and-diversity)
+  - [Get nonpareil data](#get-nonpareil-data)
+  - [Coverage](#coverage)
+  - [Diversity](#diversity)
 - [Estimated genome size](#estimated-genome-size)
+  - [Coverage, diversity and genome size plots for
+    publication](#coverage-diversity-and-genome-size-plots-for-publication)
 - [Taxonomy](#taxonomy)
   - [Read based taxonomy](#read-based-taxonomy)
   - [Contig taxonomy](#contig-taxonomy)
@@ -113,7 +118,13 @@ mapped_reads.df = read.table("/Users/sambarnett/Documents/Shade_lab/Centralia_pr
 
 Lets see how well we sequenced these metagenomes. We used nonpareil to
 estimate the coverage of these metagenomes as well as estimate
-diversity. First lets see how well covered these metagenomes are.
+diversity.
+
+## Get nonpareil data
+
+Load the data. For the coverages at different sequencing depths we need
+to convert coverage curves into a dataframe format we can play around in
+ggplot with.
 
 ``` r
 # Read in the the nonpareil data. These are separate files.
@@ -123,7 +134,7 @@ nonpareil.full = Nonpareil.set(sample.meta$nonpareil_file)
 ![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
-# First look at coverage
+# Get the coverage curves
 nonpareil.df = data.frame()
 for (i in seq(1, length(nonpareil.full@np.curves))){
   nonpareil.df = rbind(nonpareil.df, 
@@ -136,6 +147,19 @@ for (i in seq(1, length(nonpareil.full@np.curves))){
 nonpareil.df = nonpareil.df %>%
   left_join(sample.meta, by = "SequenceID")
 
+# Get the summary table that includes coverage (at full sequencing depth) and diversity, along with other metrics.
+nonpareil.sum = data.frame(summary(nonpareil.full)) %>%
+  tibble::rownames_to_column(var="SequenceID") %>%
+  mutate(SampleID = gsub("_S.*", "", SequenceID)) %>%
+  left_join(sample.meta, by = c("SequenceID", "SampleID"))
+```
+
+## Coverage
+
+Lets take a look at how well we covered these metagenomes. First lets
+get coverage curves.
+
+``` r
 # Plot curves using ggplot
 ggplot(data=nonpareil.df, aes(x=effort/1000000000/2, y=coverage)) +
   geom_hline(yintercept = 1) +
@@ -148,17 +172,115 @@ ggplot(data=nonpareil.df, aes(x=effort/1000000000/2, y=coverage)) +
   facet_wrap(~FireClassification)
 ```
 
-![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+Now look at coverage for each sample (at full sequencing depth).
+
+``` r
+# Plot genome size by fire class
+coverage_FC.wilcox = wilcox.test(x=filter(nonpareil.sum, FireClassification=="Reference")$C,
+                              y=filter(nonpareil.sum, FireClassification=="FireAffected")$C,
+                              conf.int=TRUE, conf.level=0.95)
+coverage_FC.wilcox
+```
+
+    ## 
+    ##  Wilcoxon rank sum exact test
+    ## 
+    ## data:  filter(nonpareil.sum, FireClassification == "Reference")$C and filter(nonpareil.sum, FireClassification == "FireAffected")$C
+    ## W = 67, p-value = 2.703e-10
+    ## alternative hypothesis: true location shift is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.09844787 -0.04529796
+    ## sample estimates:
+    ## difference in location 
+    ##            -0.06556381
+
+``` r
+coverage_FC.plot = ggplot(data=nonpareil.sum, aes(x=FireClassification, y=C)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(aes(fill=SiteID, shape=FireClassification), size=3, width=0.25, height=0) +
+  annotate("text", label="< 0.001", fontface="bold", x=1.5, y=1) +
+  lims(y=c(NA, 1)) +
+  scale_fill_manual(values=site.col) +
+  scale_shape_manual(values=FC.shape) +
+  labs(x="FireClassification", y="Estimated proportion metagenome coverage") +
+  present_theme +
+  theme(legend.position = "none") +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2))
+
+# Plot genome size by temperature
+coverage_temp.model = lme(C ~ CoreTemp_C, random = ~1|SiteID, data=nonpareil.sum)
+
+## Get regression for plot
+coverage_temp.model.reg.df = data.frame(summary(coverage_temp.model)$tTable) %>%
+  tibble::rownames_to_column(var="factor") %>%
+  mutate(p_slope = ifelse(factor == "CoreTemp_C", p.value, 1),
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+  mutate(p_slope = min(p_slope)) %>%
+  ungroup %>%
+  select(factor, Value, p_slope) %>%
+  tidyr::spread(key=factor, value = Value) %>%
+  mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
+summary(coverage_temp.model)
+```
+
+    ## Linear mixed-effects model fit by REML
+    ##   Data: nonpareil.sum 
+    ##         AIC       BIC   logLik
+    ##   -265.1971 -256.3784 136.5986
+    ## 
+    ## Random effects:
+    ##  Formula: ~1 | SiteID
+    ##         (Intercept) Residual
+    ## StdDev:  0.01232373 0.027114
+    ## 
+    ## Fixed effects:  C ~ CoreTemp_C 
+    ##                 Value  Std.Error DF  t-value p-value
+    ## (Intercept) 0.7387518 0.01317485 58 56.07289       0
+    ## CoreTemp_C  0.0053908 0.00052382 58 10.29131       0
+    ##  Correlation: 
+    ##            (Intr)
+    ## CoreTemp_C -0.923
+    ## 
+    ## Standardized Within-Group Residuals:
+    ##         Min          Q1         Med          Q3         Max 
+    ## -1.95528755 -0.61586794 -0.08190337  0.72554593  2.31779221 
+    ## 
+    ## Number of Observations: 69
+    ## Number of Groups: 10
+
+``` r
+## Plot
+coverage_temp.plot = ggplot(data=nonpareil.sum, aes(x=CoreTemp_C, y=C)) +
+  geom_point(aes(fill=SiteID, shape=FireClassification), size=3) +
+  geom_abline(data=coverage_temp.model.reg.df, aes(intercept = Intercept, slope = CoreTemp_C), 
+              linetype = 1, size=2, color="black") +
+  geom_abline(data=coverage_temp.model.reg.df, aes(intercept = Intercept, slope = CoreTemp_C, linetype = sig), 
+              size=1, color="white") +
+  lims(y=c(NA, 1)) +
+  scale_fill_manual(values=site.col) +
+  scale_shape_manual(values=FC.shape) +
+  scale_linetype_manual(values=c("< 0.05" = 1, "≥ 0.05" = 2)) +
+  #lims(y=c(4,7)) +
+  labs(x="Soil temperature (˚C)", y="Estimated proportion metagenome coverage", linetype="Regression\nslope p-value") +
+  present_theme +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2),
+         linetype="none")
+
+cowplot::plot_grid(coverage_FC.plot,
+                   coverage_temp.plot + theme(axis.title.y=element_blank()), 
+                   rel_widths = c(0.5, 1))
+```
+
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+## Diversity
 
 Now lets take a look at the diversity.
 
 ``` r
-# Now look at diversity
-nonpareil.sum = data.frame(summary(nonpareil.full)) %>%
-  tibble::rownames_to_column(var="SequenceID") %>%
-  mutate(SampleID = gsub("_S.*", "", SequenceID)) %>%
-  left_join(sample.meta, by = c("SequenceID", "SampleID"))
-
+# Now look at diversity over fire classification
 nonpareil_diversity_FC.wilcox = wilcox.test(x=filter(nonpareil.sum, FireClassification=="Reference")$diversity,
                                             y=filter(nonpareil.sum, FireClassification=="FireAffected")$diversity,
                                             conf.int=TRUE, conf.level=0.95)
@@ -192,6 +314,7 @@ nonpareil_diversity_FC.plot = ggplot(data=nonpareil.sum, aes(x=FireClassificatio
   guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2))
 
 # Plot by temperature
+## Note I'm not running a linear model because as you'll see this is definitely not linear.
 nonpareil_diversity_temp.plot = ggplot(data=nonpareil.sum, aes(x=CoreTemp_C, y=diversity)) +
   geom_point(aes(fill=SiteID, shape=FireClassification), size=2) +
   lims(y=c(NA, 22)) +
@@ -206,7 +329,7 @@ cowplot::plot_grid(nonpareil_diversity_FC.plot,
                    rel_widths = c(0.5, 1))
 ```
 
-![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 Lets also see how diversity changes over time.
 
@@ -267,7 +390,7 @@ ggplot(data=nonpareil.sum, aes(x=Year, y=diversity)) +
          linetype=guide_legend(override.aes=list(color="black")))
 ```
 
-![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 # Estimated genome size
 
@@ -379,7 +502,7 @@ cowplot::plot_grid(Gsize_FC.plot,
                    rel_widths = c(0.5, 1))
 ```
 
-![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 Now lets look at this over time like before
 
@@ -440,7 +563,122 @@ ggplot(data=microbe_census.df, aes(x=Year, y=average_genome_size_Mbp)) +
          linetype=guide_legend(override.aes=list(color="black")))
 ```
 
-![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+## Coverage, diversity and genome size plots for publication
+
+Lets make a nice plot with both results for publication
+
+``` r
+# Coverage plots
+coverage_FC.plot = ggplot(data=nonpareil.sum, aes(x=FireClassification, y=C)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(aes(fill=SiteID, shape=FireClassification), size=2, width=0.25, height=0) +
+  annotate("text", label="< 0.001", x=1.5, y=1, size=6*5/14) +
+  lims(y=c(NA, 1)) +
+  scale_fill_manual(values=site.col) +
+  scale_shape_manual(values=FC.shape) +
+  labs(x="FireClassification", y="Estimated proportion\nmetagenome coverage") +
+  publication_theme +
+  theme(legend.position = "none") +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2))
+
+coverage_temp.plot = ggplot(data=nonpareil.sum, aes(x=CoreTemp_C, y=C)) +
+  geom_point(aes(fill=SiteID, shape=FireClassification), size=2) +
+  geom_abline(data=filter(coverage_temp.model.reg.df, p_slope < 0.05), 
+              aes(intercept = Intercept, slope = CoreTemp_C), 
+              linetype = 2, size=1, color="black") +
+  lims(y=c(NA, 1)) +
+  scale_fill_manual(values=site.col) +
+  scale_shape_manual(values=FC.shape) +
+  scale_linetype_manual(values=c("< 0.05" = 1, "≥ 0.05" = 2)) +
+  #lims(y=c(4,7)) +
+  labs(x="Soil temperature (˚C)", y="Estimated proportion\nmetagenome coverage", linetype="Regression\nslope p-value") +
+  publication_theme +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2),
+         linetype="none")
+
+coverage.plots = cowplot::plot_grid(coverage_FC.plot,
+                                    coverage_temp.plot + theme(axis.title.y=element_blank(), legend.position = "none"), 
+                                    rel_widths = c(0.7, 1))
+
+# Diversity plots
+nonpareil_diversity_FC.plot = ggplot(data=nonpareil.sum, aes(x=FireClassification, y=diversity)) +
+  geom_boxplot(outlier.shape=NA) +
+  geom_jitter(aes(fill=SiteID, shape=FireClassification), size=2, width=0.25) +
+  annotate("text", label="< 0.001", x=1.5, y=22, size=6*5/14) +
+  lims(y=c(NA, 22)) +
+  scale_fill_manual(values=site.col) +
+  scale_shape_manual(values=FC.shape) +
+  labs(x="FireClassification", y="Nonpareil diversity") +
+  publication_theme +
+  theme(legend.position = "none") +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2))
+
+nonpareil_diversity_temp.plot = ggplot(data=nonpareil.sum, aes(x=CoreTemp_C, y=diversity)) +
+  geom_point(aes(fill=SiteID, shape=FireClassification), size=2) +
+  lims(y=c(NA, 22)) +
+  scale_fill_manual(values=site.col) +
+  scale_shape_manual(values=FC.shape) +
+  labs(x="Soil temperature (˚C)", y="Nonpareil diversity") +
+  publication_theme +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2))
+
+nonpareil_diversity.plots = cowplot::plot_grid(nonpareil_diversity_FC.plot,
+                                               nonpareil_diversity_temp.plot + theme(axis.title.y=element_blank(), legend.position = "none"), 
+                                               rel_widths = c(0.7, 1))
+
+# Genome size plots
+Gsize_FC.plot = ggplot(data=microbe_census.df, aes(x=FireClassification, y=average_genome_size_Mbp)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(aes(fill=SiteID, shape=FireClassification), size=2, width=0.25, height=0) +
+  annotate("text", label="< 0.001", x=1.5, y=6.75, size=6*5/14) +
+  lims(y=c(NA, 6.75)) +
+  scale_fill_manual(values=site.col) +
+  scale_shape_manual(values=FC.shape) +
+  labs(x="FireClassification", y="Estimated average\ngenome size (Mbp)") +
+  publication_theme +
+  theme(legend.position = "none") +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2))
+
+Gsize_temp.plot = ggplot(data=microbe_census.df, aes(x=CoreTemp_C, y=average_genome_size_Mbp)) +
+  geom_point(aes(fill=SiteID, shape=FireClassification), size=2) +
+  geom_abline(data=filter(Gsize_temp.model.reg.df, p_slope < 0.05), 
+              aes(intercept = Intercept, slope = CoreTemp_C), 
+              linetype = 2, size=1, color="black") +
+  lims(y=c(NA, 6.75)) +
+  scale_fill_manual(values=site.col) +
+  scale_shape_manual(values=FC.shape) +
+  scale_linetype_manual(values=c("< 0.05" = 1, "≥ 0.05" = 2)) +
+  #lims(y=c(4,7)) +
+  labs(x="Soil temperature (˚C)", y="Estimated average\ngenome size (Mbp)", linetype="Regression\nslope p-value") +
+  publication_theme +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2),
+         linetype="none")
+
+Gsize.plots = cowplot::plot_grid(Gsize_FC.plot,
+                                 Gsize_temp.plot + theme(axis.title.y=element_blank(), legend.position = "none"), 
+                                 rel_widths = c(0.7, 1))
+
+# Plot all together
+read_sum.plots = cowplot::plot_grid(coverage.plots,
+                                    nonpareil_diversity.plots,
+                                    Gsize.plots, ncol=1, labels = c("A", "B", "C"),
+                                    label_size = 8)
+read_sum.plots = cowplot::plot_grid(read_sum.plots, 
+                                    g_legend(Gsize_temp.plot + guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=1))), 
+                                    nrow=1, rel_widths = c(1,0.3))
+
+
+read_sum.plots
+```
+
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
+ggsave(read_sum.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS1.tiff",
+       device="tiff", width=5, height=5, units="in", bg="white")
+```
 
 # Taxonomy
 
@@ -502,7 +740,7 @@ ggplot(data=bracken.df, aes(x=as.factor(Year), y=percent_class_reads)) +
   facet_wrap(~FireClassification*SiteID, nrow=2)
 ```
 
-![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ## Contig taxonomy
 
@@ -584,7 +822,7 @@ contig_tax.plot = ggplot(data=contig_tax.sum, aes(x=as.factor(Year), y=percent_c
 contig_tax.plot
 ```
 
-![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 #ggsave(contig_tax.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Resource announcement/Fig1.tiff",
@@ -670,16 +908,17 @@ sessionInfo()
     ## [28] biomformat_1.32.0       colorspace_2.1-1        Rhdf5lib_1.26.0        
     ## [31] scales_1.3.0            iterators_1.0.14        MASS_7.3-61            
     ## [34] cli_3.6.3               rmarkdown_2.29          crayon_1.5.3           
-    ## [37] generics_0.1.3          rstudioapi_0.16.0       httr_1.4.7             
-    ## [40] reshape2_1.4.4          rhdf5_2.48.0            stringr_1.5.1          
-    ## [43] zlibbioc_1.50.0         splines_4.4.1           parallel_4.4.1         
-    ## [46] cellranger_1.1.0        XVector_0.44.0          vctrs_0.6.5            
-    ## [49] Matrix_1.7-0            jsonlite_1.8.8          IRanges_2.38.1         
-    ## [52] S4Vectors_0.42.1        foreach_1.5.2           tidyr_1.3.1            
-    ## [55] glue_1.7.0              codetools_0.2-20        cowplot_1.1.3          
-    ## [58] stringi_1.8.4           gtable_0.3.5            GenomeInfoDb_1.40.1    
-    ## [61] UCSC.utils_1.0.0        munsell_0.5.1           tibble_3.2.1           
-    ## [64] pillar_1.9.0            htmltools_0.5.8.1       rhdf5filters_1.16.0    
-    ## [67] GenomeInfoDbData_1.2.12 R6_2.5.1                evaluate_0.24.0        
-    ## [70] Biobase_2.64.0          highr_0.11              Rcpp_1.0.13            
-    ## [73] mgcv_1.9-1              xfun_0.52               pkgconfig_2.0.3
+    ## [37] ragg_1.3.2              generics_0.1.3          rstudioapi_0.16.0      
+    ## [40] httr_1.4.7              reshape2_1.4.4          rhdf5_2.48.0           
+    ## [43] stringr_1.5.1           zlibbioc_1.50.0         splines_4.4.1          
+    ## [46] parallel_4.4.1          cellranger_1.1.0        XVector_0.44.0         
+    ## [49] vctrs_0.6.5             Matrix_1.7-0            jsonlite_1.8.8         
+    ## [52] IRanges_2.38.1          S4Vectors_0.42.1        systemfonts_1.1.0      
+    ## [55] foreach_1.5.2           tidyr_1.3.1             glue_1.7.0             
+    ## [58] codetools_0.2-20        cowplot_1.1.3           stringi_1.8.4          
+    ## [61] gtable_0.3.5            GenomeInfoDb_1.40.1     UCSC.utils_1.0.0       
+    ## [64] munsell_0.5.1           tibble_3.2.1            pillar_1.9.0           
+    ## [67] htmltools_0.5.8.1       rhdf5filters_1.16.0     GenomeInfoDbData_1.2.12
+    ## [70] R6_2.5.1                textshaping_0.4.0       evaluate_0.24.0        
+    ## [73] Biobase_2.64.0          highr_0.11              Rcpp_1.0.13            
+    ## [76] mgcv_1.9-1              xfun_0.52               pkgconfig_2.0.3
