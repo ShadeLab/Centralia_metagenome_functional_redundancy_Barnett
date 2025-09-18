@@ -13,7 +13,7 @@ TBD
 
 ### Abstract
 
-TBD
+Redundancy is the capacity of coexisting populations to perform similar functions, supporting stable outputs under disturbance. The insurance hypothesis proposes that diverse communities are more resilient because they can respond to varied environmental stressors. Both redundancy and insurance likely shape resilience, but their relative contributions and potential interactions remain unclear. Here, we examined functional redundancy and potential for insurance in soil microbial communities disturbed by an ongoing underground fire in Centralia, Pennsylvania, USA, using seven years of deep metagenome sequencing from heated and reference sites. Analyses of taxonomic and functional diversity showed that functional redundancy increased with disturbance intensity, driven by declines in both diversity and average genome size. Biogeochemistry-relevant metabolisms, such as carbohydrate and nitrogen pathways, showed greater per-genome investment with disturbance intensity, indicating enhanced redundancy. However, transcription factor evenness – linked to community environmental responsiveness- was lower in heated soils. Thus, prolonged disturbance that imposes a strong selection can increase redundancy and near-term stability while simultaneously diminishing insurance potential against future stress, revealing tradeoffs between these mechanisms in microbial community resilience.
 
 ### Contents
 
