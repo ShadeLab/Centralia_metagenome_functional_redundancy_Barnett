@@ -1,7 +1,7 @@
 Overall metagenome statistics
 ================
 Sam Barnett
-14 August, 2025
+31 March, 2026
 
 - [Introduction](#introduction)
   - [Librarys and global variables](#librarys-and-global-variables)
@@ -19,6 +19,8 @@ Sam Barnett
   - [Contig taxonomy](#contig-taxonomy)
 - [Sequencing stats for resource
   announcement](#sequencing-stats-for-resource-announcement)
+- [Centralia Map for revision](#centralia-map-for-revision)
+- [New Figure S1](#new-figure-s1)
 - [Session info](#session-info)
 
 # Introduction
@@ -43,6 +45,8 @@ library(readxl)
 library(vegan)
 library(picante)
 library(Nonpareil)
+library(lme4)
+library(lmerTest)
               
 # Libraries for plotting
 library(ggplot2)
@@ -210,45 +214,50 @@ coverage_FC.plot = ggplot(data=nonpareil.sum, aes(x=FireClassification, y=C)) +
   guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2))
 
 # Plot genome size by temperature
-coverage_temp.model = lme(C ~ CoreTemp_C, random = ~1|SiteID, data=nonpareil.sum)
+coverage_temp.model.old = lme(C ~ CoreTemp_C, random = ~1|SiteID, data=nonpareil.sum)
+coverage_temp.model = lmer(C ~ CoreTemp_C + (1|SiteID) + (1|Year), data=nonpareil.sum)
 
 ## Get regression for plot
-coverage_temp.model.reg.df = data.frame(summary(coverage_temp.model)$tTable) %>%
+coverage_temp.model.reg.df = data.frame(summary(coverage_temp.model)$coefficients) %>%
   tibble::rownames_to_column(var="factor") %>%
-  mutate(p_slope = ifelse(factor == "CoreTemp_C", p.value, 1),
+  mutate(p_slope = ifelse(factor == "CoreTemp_C", Pr...t.., 1),
          factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
   mutate(p_slope = min(p_slope)) %>%
   ungroup %>%
-  select(factor, Value, p_slope) %>%
-  tidyr::spread(key=factor, value = Value) %>%
+  select(factor, Estimate, p_slope) %>%
+  tidyr::spread(key=factor, value = Estimate) %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 summary(coverage_temp.model)
 ```
 
-    ## Linear mixed-effects model fit by REML
-    ##   Data: nonpareil.sum 
-    ##         AIC       BIC   logLik
-    ##   -265.1971 -256.3784 136.5986
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: C ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: nonpareil.sum
+    ## 
+    ## REML criterion at convergence: -275.6
+    ## 
+    ## Scaled residuals: 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.08815 -0.63316  0.00983  0.66702  2.00943 
     ## 
     ## Random effects:
-    ##  Formula: ~1 | SiteID
-    ##         (Intercept) Residual
-    ## StdDev:  0.01232373 0.027114
+    ##  Groups   Name        Variance  Std.Dev.
+    ##  SiteID   (Intercept) 0.0002206 0.01485 
+    ##  Year     (Intercept) 0.0001011 0.01005 
+    ##  Residual             0.0006246 0.02499 
+    ## Number of obs: 69, groups:  SiteID, 10; Year, 7
     ## 
-    ## Fixed effects:  C ~ CoreTemp_C 
-    ##                 Value  Std.Error DF  t-value p-value
-    ## (Intercept) 0.7387518 0.01317485 58 56.07289       0
-    ## CoreTemp_C  0.0053908 0.00052382 58 10.29131       0
-    ##  Correlation: 
+    ## Fixed effects:
+    ##              Estimate Std. Error        df t value Pr(>|t|)    
+    ## (Intercept) 7.509e-01  1.464e-02 1.833e+01  51.275  < 2e-16 ***
+    ## CoreTemp_C  4.867e-03  5.608e-04 2.434e+01   8.678 6.46e-09 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
     ##            (Intr)
-    ## CoreTemp_C -0.923
-    ## 
-    ## Standardized Within-Group Residuals:
-    ##         Min          Q1         Med          Q3         Max 
-    ## -1.95528755 -0.61586794 -0.08190337  0.72554593  2.31779221 
-    ## 
-    ## Number of Observations: 69
-    ## Number of Groups: 10
+    ## CoreTemp_C -0.887
 
 ``` r
 ## Plot
@@ -314,9 +323,61 @@ nonpareil_diversity_FC.plot = ggplot(data=nonpareil.sum, aes(x=FireClassificatio
   guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2))
 
 # Plot by temperature
+
+# Plot genome size by temperature
+diversity_temp.model.old = lme(diversity ~ CoreTemp_C, random = ~1|SiteID, data=nonpareil.sum)
+diversity_temp.model = lmer(diversity ~ CoreTemp_C + (1|SiteID) + (1|Year), data=nonpareil.sum)
+
+## Get regression for plot
+diversity_temp.model.reg.df = data.frame(summary(diversity_temp.model)$coefficients) %>%
+  tibble::rownames_to_column(var="factor") %>%
+  mutate(p_slope = ifelse(factor == "CoreTemp_C", Pr...t.., 1),
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+  mutate(p_slope = min(p_slope)) %>%
+  ungroup %>%
+  select(factor, Estimate, p_slope) %>%
+  tidyr::spread(key=factor, value = Estimate) %>%
+  mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
+summary(diversity_temp.model)
+```
+
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: diversity ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: nonpareil.sum
+    ## 
+    ## REML criterion at convergence: 109.6
+    ## 
+    ## Scaled residuals: 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -2.9939 -0.6335  0.1021  0.6467  2.0363 
+    ## 
+    ## Random effects:
+    ##  Groups   Name        Variance Std.Dev.
+    ##  SiteID   (Intercept) 0.04457  0.2111  
+    ##  Year     (Intercept) 0.02839  0.1685  
+    ##  Residual             0.20596  0.4538  
+    ## Number of obs: 69, groups:  SiteID, 10; Year, 7
+    ## 
+    ## Fixed effects:
+    ##              Estimate Std. Error        df t value Pr(>|t|)    
+    ## (Intercept) 22.517730   0.241479 22.346260  93.249  < 2e-16 ***
+    ## CoreTemp_C  -0.080681   0.009329 25.193457  -8.648 5.18e-09 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
+    ##            (Intr)
+    ## CoreTemp_C -0.896
+
+``` r
 ## Note I'm not running a linear model because as you'll see this is definitely not linear.
 nonpareil_diversity_temp.plot = ggplot(data=nonpareil.sum, aes(x=CoreTemp_C, y=diversity)) +
   geom_point(aes(fill=SiteID, shape=FireClassification), size=2) +
+  geom_abline(data=diversity_temp.model.reg.df, aes(intercept = Intercept, slope = CoreTemp_C), 
+              linetype = 1, size=2, color="black") +
+  geom_abline(data=diversity_temp.model.reg.df, aes(intercept = Intercept, slope = CoreTemp_C, linetype = sig), 
+              size=1, color="white") +
   lims(y=c(NA, 22)) +
   scale_fill_manual(values=site.col) +
   scale_shape_manual(values=FC.shape) +
@@ -347,10 +408,10 @@ nonpareil_diversity_time.model.df
 ```
 
     ##        factor         Value   Std.Error DF    t.value      p.value
-    ## 1 (Intercept) -471.84012062 80.20778440 41 -5.8827223 6.352568e-07
-    ## 2        Year    0.24392667  0.03974602 41  6.1371340 2.760814e-07
-    ## 3 (Intercept)  -16.47818088 45.16621688 16 -0.3648342 7.200126e-01
-    ## 4        Year    0.01868129  0.02238224 16  0.8346479 4.162047e-01
+    ## 1 (Intercept) -471.84012159 80.20778675 41 -5.8827221 6.352571e-07
+    ## 2        Year    0.24392667  0.03974602 41  6.1371339 2.760816e-07
+    ## 3 (Intercept)  -16.47817969 45.16621678 16 -0.3648342 7.200126e-01
+    ## 4        Year    0.01868128  0.02238224 16  0.8346478 4.162047e-01
     ##   FireClassification
     ## 1       FireAffected
     ## 2       FireAffected
@@ -439,45 +500,50 @@ Gsize_FC.plot = ggplot(data=microbe_census.df, aes(x=FireClassification, y=avera
   guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol=2))
 
 # Plot genome size by temperature
-Gsize_temp.model = lme(average_genome_size_Mbp ~ CoreTemp_C, random = ~1|SiteID, data=microbe_census.df)
+Gsize_temp.model.old = lme(average_genome_size_Mbp ~ CoreTemp_C, random = ~1|SiteID, data=microbe_census.df)
+Gsize_temp.model = lmer(average_genome_size_Mbp ~ CoreTemp_C + (1|SiteID) + (1|Year), data=microbe_census.df)
 
 ## Get regression for plot
-Gsize_temp.model.reg.df = data.frame(summary(Gsize_temp.model)$tTable) %>%
+Gsize_temp.model.reg.df = data.frame(summary(Gsize_temp.model)$coefficients) %>%
   tibble::rownames_to_column(var="factor") %>%
-  mutate(p_slope = ifelse(factor == "CoreTemp_C", p.value, 1),
+  mutate(p_slope = ifelse(factor == "CoreTemp_C", Pr...t.., 1),
          factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
   mutate(p_slope = min(p_slope)) %>%
   ungroup %>%
-  select(factor, Value, p_slope) %>%
-  tidyr::spread(key=factor, value = Value) %>%
+  select(factor, Estimate, p_slope) %>%
+  tidyr::spread(key=factor, value = Estimate) %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 summary(Gsize_temp.model)
 ```
 
-    ## Linear mixed-effects model fit by REML
-    ##   Data: microbe_census.df 
-    ##        AIC      BIC    logLik
-    ##   68.19567 77.01444 -30.09783
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: average_genome_size_Mbp ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: microbe_census.df
+    ## 
+    ## REML criterion at convergence: 57.6
+    ## 
+    ## Scaled residuals: 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.7972 -0.8217  0.0301  0.5294  2.3511 
     ## 
     ## Random effects:
-    ##  Formula: ~1 | SiteID
-    ##         (Intercept)  Residual
-    ## StdDev:   0.1749679 0.3217183
+    ##  Groups   Name        Variance Std.Dev.
+    ##  SiteID   (Intercept) 0.03345  0.1829  
+    ##  Year     (Intercept) 0.01434  0.1198  
+    ##  Residual             0.08979  0.2996  
+    ## Number of obs: 69, groups:  SiteID, 10; Year, 7
     ## 
-    ## Fixed effects:  average_genome_size_Mbp ~ CoreTemp_C 
-    ##                 Value  Std.Error DF  t-value p-value
-    ## (Intercept)  6.806706 0.16640912 58 40.90344       0
-    ## CoreTemp_C  -0.050666 0.00655782 58 -7.72597       0
-    ##  Correlation: 
+    ## Fixed effects:
+    ##              Estimate Std. Error        df t value Pr(>|t|)    
+    ## (Intercept)  6.749009   0.177186 25.746309  38.090  < 2e-16 ***
+    ## CoreTemp_C  -0.048049   0.006782 32.282131  -7.084 4.67e-08 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
     ##            (Intr)
-    ## CoreTemp_C -0.914
-    ## 
-    ## Standardized Within-Group Residuals:
-    ##         Min          Q1         Med          Q3         Max 
-    ## -1.87463339 -0.67791736 -0.07303353  0.54488834  2.41864288 
-    ## 
-    ## Number of Observations: 69
-    ## Number of Groups: 10
+    ## CoreTemp_C -0.887
 
 ``` r
 ## Plot
@@ -617,6 +683,9 @@ nonpareil_diversity_FC.plot = ggplot(data=nonpareil.sum, aes(x=FireClassificatio
 
 nonpareil_diversity_temp.plot = ggplot(data=nonpareil.sum, aes(x=CoreTemp_C, y=diversity)) +
   geom_point(aes(fill=SiteID, shape=FireClassification), size=2) +
+  geom_abline(data=filter(diversity_temp.model.reg.df, p_slope < 0.05), 
+              aes(intercept = Intercept, slope = CoreTemp_C), 
+              linetype = 2, size=1, color="black") +
   lims(y=c(NA, 22)) +
   scale_fill_manual(values=site.col) +
   scale_shape_manual(values=FC.shape) +
@@ -676,7 +745,7 @@ read_sum.plots
 ![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
-ggsave(read_sum.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS1.tiff",
+ggsave(read_sum.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS1.tiff",
        device="tiff", width=5, height=5, units="in", bg="white")
 ```
 
@@ -867,6 +936,211 @@ MRA.df
 #            sep="\t", quote=FALSE, row.names = FALSE)
 ```
 
+# Centralia Map for revision
+
+Now lets make a map of Centralia and all our sites for manuscript
+revision.
+
+``` r
+library(ggmap)
+```
+
+    ## ℹ Google's Terms of Service: <https://mapsplatform.google.com>
+    ##   Stadia Maps' Terms of Service: <https://stadiamaps.com/terms-of-service/>
+    ##   OpenStreetMap's Tile Usage Policy: <https://operations.osmfoundation.org/policies/tiles/>
+    ## ℹ Please cite ggmap if you use it! Use `citation("ggmap")` for details.
+
+``` r
+library(grid)
+library(sf)
+```
+
+    ## Warning: package 'sf' was built under R version 4.4.3
+
+    ## Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE
+
+``` r
+# Get site coordinates. These are found in a table with longitude (long) and latitude (lat) for each site.
+site.coords = read_xlsx("/Users/sambarnett/Documents/Shade_lab/Centralia_project/Centralia_soil_metadata.xlsx", sheet = "Site_metadata")  %>%
+  mutate(longitude = -1*as.numeric(measurements::conv_unit(longitude, from = 'deg_dec_min', to = 'dec_deg')),
+         latitude = as.numeric(measurements::conv_unit(latitude, from = 'deg_dec_min', to = 'dec_deg'))) %>%
+  filter(SiteID %in% used_sites)
+
+## Getting the center point of the cite locations.
+center = c(lon=mean(c(max(site.coords$longitude), min(site.coords$longitude))), 
+           lat=mean(c(max(site.coords$latitude), min(site.coords$latitude))))
+
+## Get the 4 edges of the region around the above center point.
+Nlat = geosphere::destPoint(center, b=0, d=150)[2]
+Slat = geosphere::destPoint(center, b=180, d=150)[2]
+Elong = geosphere::destPoint(center, b=90, d=250)[1]
+Wlong = geosphere::destPoint(center, b=270, d=250)[1]
+
+## Making a polygon (rectangle) of these edges.
+region.poly = data.frame(corner = c("NE", "SE", "SW", "NW"), 
+                         lat = c(Nlat, Slat, Slat, Nlat), 
+                         long = c(Elong, Elong, Wlong, Wlong),
+                         group=3)
+
+# Front coordinates
+front_coord.df = data.frame(front = c(1, 2),
+                            lon_start = -76.332739, lat_start = 40.801547,
+                            lon_end = c(-76.345905, -76.344572),
+                            lat_end = c(40.801056, 40.796094)) %>%
+  mutate(m = (lat_end-lat_start)/(lon_end-lon_start)) %>%
+  mutate(b = lat_start-(m*lon_start))
+```
+
+Make the Pennsylvania map.
+
+``` r
+## Make state map for inset. The field sites were in PA, USA so we want to easily show where in the state the regional map (above polygon) is located
+pa.coords = map_data("state", "pennsylvania")
+
+pa.region.map = ggplot(data = pa.coords, aes(x=long, y = lat, group = group)) + 
+  geom_polygon(fill="grey", color="black", size=0.25) + 
+  #geom_polygon(data=region.poly, fill="red") +
+  annotate("point", x=center["lon"], y=center["lat"], fill="red", color="black", shape=21, size=1) +
+  theme_bw() +
+  publication_theme +
+  theme(legend.position = "none",
+        panel.grid = element_blank(),
+        axis.text=element_blank(),
+        axis.title=element_blank(),
+        axis.ticks=element_blank(),
+        plot.background=element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_blank()) +
+  coord_fixed(1.3)
+pa.region.map
+```
+
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+Make a USA map.
+
+``` r
+## Make state map for inset. The field sites were in PA, USA so we want to easily show where in the state the regional map (above polygon) is located
+usa.coords = map_data("usa")
+
+pa_usa.region.map = ggplot(data = usa.coords, aes(x=long, y = lat, group = group)) + 
+  geom_polygon(fill="white", color="black", size=0.25) + 
+  geom_polygon(data=pa.coords, fill="grey", color="black", size=0.25) + 
+  #geom_polygon(data=region.poly, fill="red") +
+  #annotate("point", x=center["lon"], y=center["lat"], fill="orange", color="black", shape=21, size=1) +
+  theme_bw() +
+  publication_theme +
+  theme(legend.position = "none",
+        panel.grid = element_blank(),
+        axis.text=element_blank(),
+        axis.title=element_blank(),
+        axis.ticks=element_blank(),
+        plot.background=element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_blank()) +
+  coord_fixed(1.3)
+pa_usa.region.map
+```
+
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+Now make the Centralia map and put it all together
+
+``` r
+## Make map of the specific region using the stamen terrain map.
+sbbox <- make_bbox(lon = c(Elong, Wlong), lat = c(Slat, Nlat), f = .1)
+region.map = get_googlemap(center = c(lon=-76.343139, lat=40.800804),
+                           maptype="satellite", zoom=16, scale=2) %>% 
+  ggmap()
+```
+
+    ## ℹ <https://maps.googleapis.com/maps/api/staticmap?center=40.800804,-76.343139&zoom=16&size=640x640&scale=2&maptype=satellite&key=xxx-dt6kMq9FGkHIA>
+
+``` r
+site.coords$lon = site.coords$longitude
+site.coords$lat = site.coords$latitude
+
+xmax = max(layer_scales(region.map)$x$range$range)
+region.points.map = region.map +
+  geom_segment(data=filter(front_coord.df, front == 1), x=xmax,
+               aes(y=(m*xmax + b), xend=lon_end, yend=lat_end),
+               arrow = arrow(length = unit(0.05, "npc")), color="white") +
+  geom_point(data=filter(site.coords, SiteID %in% used_sites), 
+             aes(x=lon, y=lat, fill=SiteID, shape=FireClassification), size=2, color="white") +
+  scale_shape_manual(values=FC.shape) +
+  scale_fill_manual(values=site.col) +
+  labs(x="Longitude", y="Latitude", fill="SiteID", shape="Fire classification") +
+  lims(x=sbbox[c(1,3)], y=sbbox[c(2,4)]) +
+  theme_bw() +
+  publication_theme +
+  theme(legend.position = "bottom") +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape, color="black"), title.position="top", title.hjust=0.5, ncol=3),
+         shape=guide_legend(override.aes=list(color="black"), title.position="top", title.hjust=0.5, ncol=1))
+```
+
+    ## Scale for x is already present.
+    ## Adding another scale for x, which will replace the existing scale.
+
+    ## Scale for y is already present.
+    ## Adding another scale for y, which will replace the existing scale.
+
+``` r
+map.leg = g_legend(region.points.map)
+```
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+``` r
+# Combine the maps together
+USA_PA.map = cowplot::plot_grid(pa_usa.region.map, pa.region.map, nrow=1)
+
+Centralia.map = cowplot::plot_grid(USA_PA.map, 
+                                   region.points.map + theme(legend.position="none"),
+                                   map.leg, ncol=1, rel_heights = c(0.5,1,0.5))
+```
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+    ## Warning in min(x): no non-missing arguments to max; returning -Inf
+
+    ## Warning in min(x): no non-missing arguments to min; returning Inf
+
+    ## Warning in max(x): no non-missing arguments to max; returning -Inf
+
+``` r
+Centralia.map
+```
+
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+# New Figure S1
+
+Combine original figure S1 with map
+
+``` r
+# Plot all together
+read_sum.plots = cowplot::plot_grid(coverage.plots,
+                                    nonpareil_diversity.plots,
+                                    Gsize.plots, ncol=1, labels = c("B", "C", "D"),
+                                    label_size = 8)
+read_sum.plots = cowplot::plot_grid(Centralia.map, read_sum.plots,
+                                    nrow=1, labels = c("A", ""),
+                                    label_size = 8)
+read_sum.plots
+```
+
+![](A1_Overall_stats_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+``` r
+ggsave(read_sum.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS1.tiff",
+       device="tiff", width=7, height=5, units="in", bg="white")
+```
+
 # Session info
 
 ``` r
@@ -875,7 +1149,7 @@ sessionInfo()
 
     ## R version 4.4.1 (2024-06-14)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Ventura 13.0.1
+    ## Running under: macOS 26.3.1
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
@@ -888,37 +1162,47 @@ sessionInfo()
     ## tzcode source: internal
     ## 
     ## attached base packages:
-    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
+    ## [1] grid      stats     graphics  grDevices utils     datasets  methods  
+    ## [8] base     
     ## 
     ## other attached packages:
-    ##  [1] ggplot2_3.5.2   Nonpareil_3.5.3 picante_1.8.2   nlme_3.1-166   
-    ##  [5] vegan_2.6-8     lattice_0.22-6  permute_0.9-7   readxl_1.4.3   
-    ##  [9] ape_5.8         phyloseq_1.48.0 dplyr_1.1.4    
+    ##  [1] sf_1.1-0        ggmap_4.0.0     ggplot2_4.0.1   lmerTest_3.2-0 
+    ##  [5] lme4_1.1-37     Matrix_1.7-0    Nonpareil_3.5.3 picante_1.8.2  
+    ##  [9] nlme_3.1-166    vegan_2.7-1     permute_0.9-7   readxl_1.4.3   
+    ## [13] ape_5.8         phyloseq_1.48.0 dplyr_1.1.4    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] ade4_1.7-22             tidyselect_1.2.1        farver_2.1.2           
-    ##  [4] Biostrings_2.72.1       fastmap_1.2.0           digest_0.6.37          
-    ##  [7] lifecycle_1.0.4         cluster_2.1.6           survival_3.7-0         
-    ## [10] magrittr_2.0.3          compiler_4.4.1          rlang_1.1.4            
-    ## [13] tools_4.4.1             igraph_2.0.3            utf8_1.2.4             
-    ## [16] yaml_2.3.10             data.table_1.16.0       knitr_1.48             
-    ## [19] labeling_0.4.3          plyr_1.8.9              withr_3.0.1            
-    ## [22] purrr_1.0.2             BiocGenerics_0.50.0     grid_4.4.1             
-    ## [25] stats4_4.4.1            fansi_1.0.6             multtest_2.60.0        
-    ## [28] biomformat_1.32.0       colorspace_2.1-1        Rhdf5lib_1.26.0        
-    ## [31] scales_1.3.0            iterators_1.0.14        MASS_7.3-61            
-    ## [34] cli_3.6.3               rmarkdown_2.29          crayon_1.5.3           
-    ## [37] ragg_1.3.2              generics_0.1.3          rstudioapi_0.16.0      
-    ## [40] httr_1.4.7              reshape2_1.4.4          rhdf5_2.48.0           
-    ## [43] stringr_1.5.1           zlibbioc_1.50.0         splines_4.4.1          
-    ## [46] parallel_4.4.1          cellranger_1.1.0        XVector_0.44.0         
-    ## [49] vctrs_0.6.5             Matrix_1.7-0            jsonlite_1.8.8         
-    ## [52] IRanges_2.38.1          S4Vectors_0.42.1        systemfonts_1.1.0      
-    ## [55] foreach_1.5.2           tidyr_1.3.1             glue_1.7.0             
-    ## [58] codetools_0.2-20        cowplot_1.1.3           stringi_1.8.4          
-    ## [61] gtable_0.3.5            GenomeInfoDb_1.40.1     UCSC.utils_1.0.0       
-    ## [64] munsell_0.5.1           tibble_3.2.1            pillar_1.9.0           
-    ## [67] htmltools_0.5.8.1       rhdf5filters_1.16.0     GenomeInfoDbData_1.2.12
-    ## [70] R6_2.5.1                textshaping_0.4.0       evaluate_0.24.0        
-    ## [73] Biobase_2.64.0          highr_0.11              Rcpp_1.0.13            
-    ## [76] mgcv_1.9-1              xfun_0.52               pkgconfig_2.0.3
+    ##   [1] Rdpack_2.6.4            DBI_1.2.3               bitops_1.0-8           
+    ##   [4] rlang_1.1.4             magrittr_2.0.3          ade4_1.7-22            
+    ##   [7] e1071_1.7-16            compiler_4.4.1          mgcv_1.9-1             
+    ##  [10] maps_3.4.2              png_0.1-8               systemfonts_1.3.1      
+    ##  [13] vctrs_0.6.5             reshape2_1.4.4          stringr_1.5.1          
+    ##  [16] pkgconfig_2.0.3         crayon_1.5.3            fastmap_1.2.0          
+    ##  [19] XVector_0.44.0          labeling_0.4.3          utf8_1.2.4             
+    ##  [22] rmarkdown_2.29          UCSC.utils_1.0.0        nloptr_2.2.1           
+    ##  [25] ragg_1.3.2              purrr_1.0.2             xfun_0.52              
+    ##  [28] zlibbioc_1.50.0         GenomeInfoDb_1.40.1     jsonlite_1.8.8         
+    ##  [31] biomformat_1.32.0       highr_0.11              rhdf5filters_1.16.0    
+    ##  [34] Rhdf5lib_1.26.0         jpeg_0.1-10             parallel_4.4.1         
+    ##  [37] cluster_2.1.6           R6_2.5.1                stringi_1.8.4          
+    ##  [40] RColorBrewer_1.1-3      boot_1.3-31             cellranger_1.1.0       
+    ##  [43] numDeriv_2016.8-1.1     Rcpp_1.1.0              iterators_1.0.14       
+    ##  [46] knitr_1.48              IRanges_2.38.1          splines_4.4.1          
+    ##  [49] igraph_2.0.3            tidyselect_1.2.1        rstudioapi_0.16.0      
+    ##  [52] yaml_2.3.10             codetools_0.2-20        curl_5.2.2             
+    ##  [55] lattice_0.22-6          tibble_3.2.1            plyr_1.8.9             
+    ##  [58] Biobase_2.64.0          withr_3.0.1             S7_0.2.1               
+    ##  [61] geosphere_1.5-20        evaluate_0.24.0         survival_3.7-0         
+    ##  [64] units_1.0-1             proxy_0.4-27            Biostrings_2.72.1      
+    ##  [67] pillar_1.9.0            KernSmooth_2.23-24      foreach_1.5.2          
+    ##  [70] stats4_4.4.1            reformulas_0.4.0        measurements_1.5.1     
+    ##  [73] generics_0.1.3          sp_2.1-4                S4Vectors_0.42.1       
+    ##  [76] scales_1.4.0            minqa_1.2.8             class_7.3-22           
+    ##  [79] glue_1.7.0              tools_4.4.1             data.table_1.16.0      
+    ##  [82] cowplot_1.1.3           rhdf5_2.48.0            tidyr_1.3.1            
+    ##  [85] rbibutils_2.3           colorspace_2.1-1        GenomeInfoDbData_1.2.12
+    ##  [88] cli_3.6.3               textshaping_0.4.0       fansi_1.0.6            
+    ##  [91] gtable_0.3.6            digest_0.6.37           classInt_0.4-11        
+    ##  [94] BiocGenerics_0.50.0     farver_2.1.2            htmltools_0.5.8.1      
+    ##  [97] multtest_2.60.0         lifecycle_1.0.4         httr_1.4.7             
+    ## [100] MASS_7.3-61

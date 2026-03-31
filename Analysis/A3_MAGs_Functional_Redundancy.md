@@ -1,7 +1,7 @@
 Analysis of MAGs and their Functional Redundancy
 ================
 Sam Barnett
-08 August, 2025
+31 March, 2026
 
 - [Introduction](#introduction)
   - [Librarys and global variables](#librarys-and-global-variables)
@@ -27,8 +27,8 @@ Sam Barnett
   - [Comparing functional diversity](#comparing-functional-diversity)
   - [Comparing taxonomic diversity](#comparing-taxonomic-diversity)
   - [Plot all together](#plot-all-together)
-- [Functional redundancy from KEGG
-  orthologues](#functional-redundancy-from-kegg-orthologues-1)
+- [Functional redundancy from gapseq
+  pathways](#functional-redundancy-from-gapseq-pathways)
   - [Get data](#get-data-1)
   - [Calculating functional
     redundancy](#calculating-functional-redundancy-1)
@@ -52,6 +52,10 @@ Here are some libraries used in this analysis and the global varaibles
 that will be used throughout. Mostly variables for consistent plotting.
 
 ``` r
+# Clear issue with package adiv
+options(rgl.useNULL=TRUE)
+#.rs.restartR()
+
 # Libraries for data
 library(dplyr)
 library(phyloseq)
@@ -65,6 +69,8 @@ library(Nonpareil)
 library(ecotraj)
 library(adiv)
 library(ggkegg)
+library(lme4)
+library(lmerTest)
 
 # Libraries for plotting
 library(ggplot2)
@@ -419,7 +425,7 @@ MAG_Mapping.plot
 ![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
-ggsave(MAG_Mapping.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS6.tiff",
+ggsave(MAG_Mapping.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS6.tiff",
        device="tiff", width=7, height=3.5, units="in", bg = "white")
 ```
 
@@ -790,7 +796,7 @@ OTU_MAG_Taxa.plot
 ![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 ``` r
-ggsave(OTU_MAG_Taxa.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS7.tiff",
+ggsave(OTU_MAG_Taxa.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS7.tiff",
        device="tiff", width=7, height=7, units="in", bg = "white")
 ```
 
@@ -876,7 +882,7 @@ plot(MAG_OTU.procrustes, kind=2)
 
 ``` r
 # Save figure
-tiff(filename = "/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS8.tiff", 
+tiff(filename = "/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS8.tiff", 
      width = 5, height = 5, units = "in", res=300)
 plot(MAG_OTU.procrustes, kind=1)
 dev.off()
@@ -933,8 +939,22 @@ MAG_OTU_BC.plot
 ![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
-ggsave(MAG_OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS9.tiff",
-       device="tiff", width=7, height=5, units="in", bg = "white")
+#ggsave(MAG_OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS9.tiff",
+#       device="tiff", width=7, height=5, units="in", bg = "white")
+```
+
+Save just the MAG plot for supplemental publication
+
+``` r
+MAG_BC.plot
+```
+
+![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+``` r
+ggsave(MAG_BC.plot, 
+       file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS9.tiff",
+       device="tiff", width=3.5, height=5, units="in", bg = "white")
 ```
 
 # Functional redundancy from KEGG orthologues
@@ -1031,43 +1051,49 @@ temp, time, and fire classification.
 
 ``` r
 # Linear mixed effects over temperature
-FR_temp.model = lme(FR ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+FR_temp.model.old = lme(FR ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+FR_temp.model = lmer(FR ~ CoreTemp_C + (1|SiteID) + (1|Year), data=FR.df)
+
 FR_temp.model.sum = summary(FR_temp.model)
 FR_temp.model.sum
 ```
 
-    ## Linear mixed-effects model fit by REML
-    ##   Data: FR.df 
-    ##         AIC       BIC   logLik
-    ##   -337.9711 -329.1523 172.9855
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: FR ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: FR.df
+    ## 
+    ## REML criterion at convergence: -346.1
+    ## 
+    ## Scaled residuals: 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.08240 -0.52182 -0.04226  0.54383  2.06838 
     ## 
     ## Random effects:
-    ##  Formula: ~1 | SiteID
-    ##         (Intercept)   Residual
-    ## StdDev:  0.02423539 0.01360915
+    ##  Groups   Name        Variance  Std.Dev.
+    ##  SiteID   (Intercept) 5.960e-04 0.024414
+    ##  Year     (Intercept) 3.979e-06 0.001995
+    ##  Residual             1.810e-04 0.013454
+    ## Number of obs: 69, groups:  SiteID, 10; Year, 7
     ## 
-    ## Fixed effects:  FR ~ CoreTemp_C 
-    ##                 Value   Std.Error DF   t-value p-value
-    ## (Intercept) 0.2880428 0.011354561 58 25.368026  0.0000
-    ## CoreTemp_C  0.0012216 0.000354938 58  3.441735  0.0011
-    ##  Correlation: 
+    ## Fixed effects:
+    ##              Estimate Std. Error        df t value Pr(>|t|)    
+    ## (Intercept) 2.887e-01  1.154e-02 2.393e+01  25.019  < 2e-16 ***
+    ## CoreTemp_C  1.192e-03  3.625e-04 4.284e+01   3.289  0.00202 ** 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
     ##            (Intr)
-    ## CoreTemp_C -0.724
-    ## 
-    ## Standardized Within-Group Residuals:
-    ##         Min          Q1         Med          Q3         Max 
-    ## -2.11797622 -0.50304581  0.03312956  0.56975334  2.10739372 
-    ## 
-    ## Number of Observations: 69
-    ## Number of Groups: 10
+    ## CoreTemp_C -0.727
 
 ``` r
-FR_temp.model.sig = ifelse(FR_temp.model.sum$tTable[10] < 0.05, 1, 2)
+FR_temp.model.sig = ifelse(FR_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 FR_temp.plot = ggplot(data=FR.df, aes(x=CoreTemp_C, y=FR)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = FR_temp.model.sum$tTable[1], 
-              slope = FR_temp.model.sum$tTable[2],
+  geom_abline(intercept = FR_temp.model.sum$coefficients[1], 
+              slope = FR_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1126,22 +1152,24 @@ for(FC in unique(FR.df$FireClassification)){
 
 FR_time.model.reg = FR_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
 FR_time.model.reg
 ```
 
-    ## # A tibble: 2 × 5
-    ##   FireClassification p_slope Intercept      Year sig   
-    ##   <chr>                <dbl>     <dbl>     <dbl> <chr> 
-    ## 1 FireAffected        0.0248     5.60  -0.00261  < 0.05
-    ## 2 Reference           0.300     -0.990  0.000629 ≥ 0.05
+    ## # A tibble: 2 × 6
+    ##   FireClassification SE_slope p_slope Intercept      Year sig   
+    ##   <chr>                 <dbl>   <dbl>     <dbl>     <dbl> <chr> 
+    ## 1 FireAffected       0.00112   0.0248     5.60  -0.00261  < 0.05
+    ## 2 Reference          0.000588  0.300     -0.990  0.000629 ≥ 0.05
 
 ``` r
 FR_time.plot = ggplot(data=FR.df, aes(x=Year, y=FR)) +
@@ -1178,7 +1206,7 @@ cowplot::plot_grid(FR_FC.plot + theme(legend.position = "none"),
                    FR.leg, labels=c("A", "B", "C", ""), label_size = 8)
 ```
 
-![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
 
 ## Comparing functional diversity
 
@@ -1187,43 +1215,49 @@ functional diversity across temp, time, and fire classification.
 
 ``` r
 # Linear mixed effects over temperature
-FD_temp.model = lme(FD ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+FD_temp.model.old = lme(FD ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+FD_temp.model = lmer(FD ~ CoreTemp_C + (1|SiteID) + (1|Year), data=FR.df)
+
 FD_temp.model.sum = summary(FD_temp.model)
 FD_temp.model.sum
 ```
 
-    ## Linear mixed-effects model fit by REML
-    ##   Data: FR.df 
-    ##         AIC       BIC   logLik
-    ##   -319.9818 -311.1631 163.9909
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: FD ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: FR.df
+    ## 
+    ## REML criterion at convergence: -328
+    ## 
+    ## Scaled residuals: 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.56815 -0.55592 -0.03535  0.74078  2.31659 
     ## 
     ## Random effects:
-    ##  Formula: ~1 | SiteID
-    ##         (Intercept)   Residual
-    ## StdDev:  0.02352864 0.01593522
+    ##  Groups   Name        Variance  Std.Dev. 
+    ##  SiteID   (Intercept) 5.570e-04 0.0236017
+    ##  Year     (Intercept) 9.201e-07 0.0009592
+    ##  Residual             2.528e-04 0.0159008
+    ## Number of obs: 69, groups:  SiteID, 10; Year, 7
     ## 
-    ## Fixed effects:  FD ~ CoreTemp_C 
-    ##                  Value   Std.Error DF  t-value p-value
-    ## (Intercept)  0.7170471 0.012161540 58 58.96023       0
-    ## CoreTemp_C  -0.0021786 0.000407179 58 -5.35057       0
-    ##  Correlation: 
+    ## Fixed effects:
+    ##               Estimate Std. Error         df t value Pr(>|t|)    
+    ## (Intercept)  0.7167420  0.0122101 22.0200778  58.701  < 2e-16 ***
+    ## CoreTemp_C  -0.0021656  0.0004089 35.4165625  -5.297 6.33e-06 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
     ##            (Intr)
     ## CoreTemp_C -0.775
-    ## 
-    ## Standardized Within-Group Residuals:
-    ##         Min          Q1         Med          Q3         Max 
-    ## -2.58059492 -0.56482824 -0.04829687  0.73124518  2.31153077 
-    ## 
-    ## Number of Observations: 69
-    ## Number of Groups: 10
 
 ``` r
-FD_temp.model.sig = ifelse(FD_temp.model.sum$tTable[10] < 0.05, 1, 2)
+FD_temp.model.sig = ifelse(FD_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 FD_temp.plot = ggplot(data=FR.df, aes(x=CoreTemp_C, y=FD)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = FD_temp.model.sum$tTable[1], 
-              slope = FD_temp.model.sum$tTable[2],
+  geom_abline(intercept = FD_temp.model.sum$coefficients[1], 
+              slope = FD_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1282,22 +1316,24 @@ for(FC in unique(FR.df$FireClassification)){
 
 FD_time.model.reg = FD_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
 FD_time.model.reg
 ```
 
-    ## # A tibble: 2 × 5
-    ##   FireClassification  p_slope Intercept     Year sig   
-    ##   <chr>                 <dbl>     <dbl>    <dbl> <chr> 
-    ## 1 FireAffected       0.000110   -10.2   0.00538  < 0.05
-    ## 2 Reference          0.756        0.261 0.000222 ≥ 0.05
+    ## # A tibble: 2 × 6
+    ##   FireClassification SE_slope  p_slope Intercept     Year sig   
+    ##   <chr>                 <dbl>    <dbl>     <dbl>    <dbl> <chr> 
+    ## 1 FireAffected       0.00126  0.000110   -10.2   0.00538  < 0.05
+    ## 2 Reference          0.000700 0.756        0.261 0.000222 ≥ 0.05
 
 ``` r
 FD_time.plot = ggplot(data=FR.df, aes(x=Year, y=FD)) +
@@ -1332,7 +1368,7 @@ cowplot::plot_grid(FD_FC.plot + theme(legend.position = "none"),
                    FD.leg, labels=c("A", "B", "C", ""), label_size = 8)
 ```
 
-![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
 ## Comparing taxonomic diversity
 
@@ -1341,43 +1377,49 @@ taxonomic diversity across temp, time, and fire classification.
 
 ``` r
 # Linear mixed effects over temperature
-TD_temp.model = lme(TD ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+TD_temp.model.old = lme(TD ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+TD_temp.model = lmer(TD ~ CoreTemp_C + (1|SiteID) + (1|Year), data=FR.df)
+
 TD_temp.model.sum = summary(TD_temp.model)
 TD_temp.model.sum
 ```
 
-    ## Linear mixed-effects model fit by REML
-    ##   Data: FR.df 
-    ##         AIC       BIC   logLik
-    ##   -344.0034 -335.1846 176.0017
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: TD ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: FR.df
+    ## 
+    ## REML criterion at convergence: -352
+    ## 
+    ## Scaled residuals: 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -5.4775 -0.2948  0.1286  0.4444  1.5824 
     ## 
     ## Random effects:
-    ##  Formula: ~1 | SiteID
-    ##         (Intercept)   Residual
-    ## StdDev: 0.008148673 0.01483046
+    ##  Groups   Name        Variance  Std.Dev. 
+    ##  SiteID   (Intercept) 6.652e-05 0.0081563
+    ##  Year     (Intercept) 8.633e-07 0.0009291
+    ##  Residual             2.191e-04 0.0148020
+    ## Number of obs: 69, groups:  SiteID, 10; Year, 7
     ## 
-    ## Fixed effects:  TD ~ CoreTemp_C 
-    ##                  Value   Std.Error DF   t-value p-value
-    ## (Intercept)  1.0054970 0.007699354 58 130.59499       0
-    ## CoreTemp_C  -0.0013291 0.000303230 58  -4.38324       0
-    ##  Correlation: 
+    ## Fixed effects:
+    ##               Estimate Std. Error         df t value Pr(>|t|)    
+    ## (Intercept)  1.0053254  0.0077248 23.5297689 130.143  < 2e-16 ***
+    ## CoreTemp_C  -0.0013217  0.0003041 30.8988469  -4.347 0.000139 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
     ##            (Intr)
     ## CoreTemp_C -0.913
-    ## 
-    ## Standardized Within-Group Residuals:
-    ##        Min         Q1        Med         Q3        Max 
-    ## -5.4804272 -0.3030917  0.1366075  0.4592193  1.5723345 
-    ## 
-    ## Number of Observations: 69
-    ## Number of Groups: 10
 
 ``` r
-TD_temp.model.sig = ifelse(TD_temp.model.sum$tTable[10] < 0.05, 1, 2)
+TD_temp.model.sig = ifelse(TD_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 TD_temp.plot = ggplot(data=FR.df, aes(x=CoreTemp_C, y=TD)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = TD_temp.model.sum$tTable[1], 
-              slope = TD_temp.model.sum$tTable[2],
+  geom_abline(intercept = TD_temp.model.sum$coefficients[1], 
+              slope = TD_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1436,22 +1478,24 @@ for(FC in unique(FR.df$FireClassification)){
 
 TD_time.model.reg = TD_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
 TD_time.model.reg
 ```
 
-    ## # A tibble: 2 × 5
-    ##   FireClassification  p_slope Intercept    Year sig   
-    ##   <chr>                 <dbl>     <dbl>   <dbl> <chr> 
-    ## 1 FireAffected       0.000848     -7.55 0.00422 < 0.05
-    ## 2 Reference          0.0853       -1.40 0.00118 ≥ 0.05
+    ## # A tibble: 2 × 6
+    ##   FireClassification SE_slope  p_slope Intercept    Year sig   
+    ##   <chr>                 <dbl>    <dbl>     <dbl>   <dbl> <chr> 
+    ## 1 FireAffected       0.00117  0.000848     -7.55 0.00422 < 0.05
+    ## 2 Reference          0.000645 0.0853       -1.40 0.00118 ≥ 0.05
 
 ``` r
 TD_time.plot = ggplot(data=FR.df, aes(x=Year, y=TD)) +
@@ -1486,7 +1530,7 @@ cowplot::plot_grid(TD_FC.plot + theme(legend.position = "none"),
                    TD.leg, labels=c("A", "B", "C", ""), label_size = 8)
 ```
 
-![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
 
 ## Plot all together
 
@@ -1517,14 +1561,14 @@ FR_TD_FD.plots = cowplot::plot_grid(cowplot::plot_grid(FR_FC.plot + labs(y="Func
 FR_TD_FD.plots
 ```
 
-![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-25-1.png)<!-- -->
+![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
 
 ``` r
-#ggsave(FR_TD_FD.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/Fig2.tiff",
-#       device="tiff", width=3.5, height=7, units="in", bg = "white")
+ggsave(FR_TD_FD.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Fig2.tiff",
+       device="tiff", width=3.5, height=7, units="in", bg = "white")
 ```
 
-# Functional redundancy from KEGG orthologues
+# Functional redundancy from gapseq pathways
 
 Because MAGs are not complete genomes we may be missing genes in some
 MAGs that are present in others that may lead to the appearance of
@@ -1654,43 +1698,50 @@ temp, time, and fire classification.
 
 ``` r
 # Linear mixed effects over temperature
-path_FR_temp.model = lme(FR ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_FR_temp.model.old = lme(FR ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_FR_temp.model = lmer(FR ~ CoreTemp_C + (1|SiteID) + (1|Year), data=path_FR.df)
 path_FR_temp.model.sum = summary(path_FR_temp.model)
 path_FR_temp.model.sum
 ```
 
-    ## Linear mixed-effects model fit by REML
-    ##   Data: path_FR.df 
-    ##         AIC       BIC   logLik
-    ##   -351.1707 -342.3519 179.5853
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: FR ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: path_FR.df
+    ## 
+    ## REML criterion at convergence: -359.2
+    ## 
+    ## Scaled residuals: 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -2.8868 -0.4756  0.0411  0.5066  1.8337 
     ## 
     ## Random effects:
-    ##  Formula: ~1 | SiteID
-    ##         (Intercept)   Residual
-    ## StdDev:  0.01865099 0.01262549
+    ##  Groups   Name        Variance  Std.Dev.
+    ##  SiteID   (Intercept) 0.0003479 0.01865 
+    ##  Year     (Intercept) 0.0000000 0.00000 
+    ##  Residual             0.0001594 0.01263 
+    ## Number of obs: 69, groups:  SiteID, 10; Year, 7
     ## 
-    ## Fixed effects:  FR ~ CoreTemp_C 
-    ##                  Value   Std.Error DF   t-value p-value
-    ## (Intercept) 0.25234666 0.009637744 58 26.183167  0.0000
-    ## CoreTemp_C  0.00095442 0.000322629 58  2.958249  0.0045
-    ##  Correlation: 
+    ## Fixed effects:
+    ##              Estimate Std. Error        df t value Pr(>|t|)    
+    ## (Intercept) 2.523e-01  9.638e-03 3.284e+01  26.183  < 2e-16 ***
+    ## CoreTemp_C  9.544e-04  3.226e-04 6.700e+01   2.958  0.00427 ** 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
     ##            (Intr)
     ## CoreTemp_C -0.775
-    ## 
-    ## Standardized Within-Group Residuals:
-    ##         Min          Q1         Med          Q3         Max 
-    ## -2.88677976 -0.47556104  0.04110005  0.50663625  1.83365400 
-    ## 
-    ## Number of Observations: 69
-    ## Number of Groups: 10
+    ## optimizer (nloptwrap) convergence code: 0 (OK)
+    ## boundary (singular) fit: see help('isSingular')
 
 ``` r
-path_FR_temp.model.sig = ifelse(path_FR_temp.model.sum$tTable[10] < 0.05, 1, 2)
+path_FR_temp.model.sig = ifelse(path_FR_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 path_FR_temp.plot = ggplot(data=path_FR.df, aes(x=CoreTemp_C, y=FR)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = path_FR_temp.model.sum$tTable[1], 
-              slope = path_FR_temp.model.sum$tTable[2],
+  geom_abline(intercept = path_FR_temp.model.sum$coefficients[1], 
+              slope = path_FR_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1748,23 +1799,25 @@ for(FC in unique(path_FR.df$FireClassification)){
 }
 
 path_FR_time.model.reg = path_FR_time.model.df %>%
-  mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
 path_FR_time.model.reg
 ```
 
-    ## # A tibble: 2 × 5
-    ##   FireClassification p_slope Intercept      Year sig   
-    ##   <chr>                <dbl>     <dbl>     <dbl> <chr> 
-    ## 1 FireAffected        0.0862      4.05 -0.00187  ≥ 0.05
-    ## 2 Reference           0.212      -1.38  0.000810 ≥ 0.05
+    ## # A tibble: 2 × 6
+    ##   FireClassification SE_slope p_slope Intercept      Year sig   
+    ##   <chr>                 <dbl>   <dbl>     <dbl>     <dbl> <chr> 
+    ## 1 FireAffected       0.00106   0.0862      4.05 -0.00187  ≥ 0.05
+    ## 2 Reference          0.000623  0.212      -1.38  0.000810 ≥ 0.05
 
 ``` r
 path_FR_time.plot = ggplot(data=path_FR.df, aes(x=Year, y=FR)) +
@@ -1799,7 +1852,7 @@ cowplot::plot_grid(path_FR_FC.plot + theme(legend.position = "none"),
                    path_FR.leg, labels=c("A", "B", "C", ""), label_size = 8)
 ```
 
-![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-29-1.png)<!-- -->
+![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
 
 ## Comparing functional diversity
 
@@ -1808,43 +1861,48 @@ functional diversity across temp, time, and fire classification.
 
 ``` r
 # Linear mixed effects over temperature
-path_FD_temp.model = lme(FD ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_FD_temp.model.old = lme(FD ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_FD_temp.model = lmer(FD ~ CoreTemp_C + (1|SiteID) + (1|Year), data=path_FR.df)
 path_FD_temp.model.sum = summary(path_FD_temp.model)
 path_FD_temp.model.sum
 ```
 
-    ## Linear mixed-effects model fit by REML
-    ##   Data: path_FR.df 
-    ##         AIC       BIC   logLik
-    ##   -351.6201 -342.8014 179.8101
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: FD ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: path_FR.df
+    ## 
+    ## REML criterion at convergence: -360
+    ## 
+    ## Scaled residuals: 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.34816 -0.48825 -0.01072  0.59031  1.90722 
     ## 
     ## Random effects:
-    ##  Formula: ~1 | SiteID
-    ##         (Intercept)   Residual
-    ## StdDev:  0.01556482 0.01289742
+    ##  Groups   Name        Variance  Std.Dev.
+    ##  SiteID   (Intercept) 2.467e-04 0.015708
+    ##  Year     (Intercept) 6.933e-06 0.002633
+    ##  Residual             1.594e-04 0.012624
+    ## Number of obs: 69, groups:  SiteID, 10; Year, 7
     ## 
-    ## Fixed effects:  FD ~ CoreTemp_C 
-    ##                  Value   Std.Error DF  t-value p-value
-    ## (Intercept)  0.7518943 0.009030080 58 83.26553       0
-    ## CoreTemp_C  -0.0019316 0.000319999 58 -6.03627       0
-    ##  Correlation: 
+    ## Fixed effects:
+    ##               Estimate Std. Error         df t value Pr(>|t|)    
+    ## (Intercept)  0.7503617  0.0092958 30.9956216   80.72  < 2e-16 ***
+    ## CoreTemp_C  -0.0018658  0.0003302 48.9860369   -5.65 8.08e-07 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
     ##            (Intr)
-    ## CoreTemp_C -0.821
-    ## 
-    ## Standardized Within-Group Residuals:
-    ##         Min          Q1         Med          Q3         Max 
-    ## -2.48423584 -0.58164040  0.04173726  0.61770437  1.93721034 
-    ## 
-    ## Number of Observations: 69
-    ## Number of Groups: 10
+    ## CoreTemp_C -0.822
 
 ``` r
-path_FD_temp.model.sig = ifelse(path_FD_temp.model.sum$tTable[10] < 0.05, 1, 2)
+path_FD_temp.model.sig = ifelse(path_FD_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 path_FD_temp.plot = ggplot(data=path_FR.df, aes(x=CoreTemp_C, y=FD)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = path_FD_temp.model.sum$tTable[1], 
-              slope = path_FD_temp.model.sum$tTable[2],
+  geom_abline(intercept = path_FD_temp.model.sum$coefficients[1], 
+              slope = path_FD_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1903,22 +1961,24 @@ for(FC in unique(path_FR.df$FireClassification)){
 
 path_FD_time.model.reg = path_FD_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
 path_FD_time.model.reg
 ```
 
-    ## # A tibble: 2 × 5
-    ##   FireClassification   p_slope Intercept      Year sig   
-    ##   <chr>                  <dbl>     <dbl>     <dbl> <chr> 
-    ## 1 FireAffected       0.0000364    -9.23  0.00492   < 0.05
-    ## 2 Reference          0.887         0.572 0.0000783 ≥ 0.05
+    ## # A tibble: 2 × 6
+    ##   FireClassification SE_slope   p_slope Intercept      Year sig   
+    ##   <chr>                 <dbl>     <dbl>     <dbl>     <dbl> <chr> 
+    ## 1 FireAffected       0.00106  0.0000364    -9.23  0.00492   < 0.05
+    ## 2 Reference          0.000541 0.887         0.572 0.0000783 ≥ 0.05
 
 ``` r
 path_FD_time.plot = ggplot(data=path_FR.df, aes(x=Year, y=FD)) +
@@ -1953,7 +2013,7 @@ cowplot::plot_grid(path_FD_FC.plot + theme(legend.position = "none"),
                    path_FD.leg, labels=c("A", "B", "C", ""), label_size = 8)
 ```
 
-![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-30-1.png)<!-- -->
+![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
 
 ## Comparing taxonomic diversity
 
@@ -1962,43 +2022,48 @@ taxonomic diversity across temp, time, and fire classification.
 
 ``` r
 # Linear mixed effects over temperature
-path_TD_temp.model = lme(TD ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_TD_temp.model.old = lme(TD ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_TD_temp.model = lmer(TD ~ CoreTemp_C + (1|SiteID) + (1|Year), data=path_FR.df)
 path_TD_temp.model.sum = summary(path_TD_temp.model)
 path_TD_temp.model.sum
 ```
 
-    ## Linear mixed-effects model fit by REML
-    ##   Data: path_FR.df 
-    ##         AIC       BIC   logLik
-    ##   -344.0034 -335.1846 176.0017
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: TD ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: path_FR.df
+    ## 
+    ## REML criterion at convergence: -352
+    ## 
+    ## Scaled residuals: 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -5.4775 -0.2948  0.1286  0.4444  1.5824 
     ## 
     ## Random effects:
-    ##  Formula: ~1 | SiteID
-    ##         (Intercept)   Residual
-    ## StdDev: 0.008148673 0.01483046
+    ##  Groups   Name        Variance  Std.Dev. 
+    ##  SiteID   (Intercept) 6.652e-05 0.0081563
+    ##  Year     (Intercept) 8.633e-07 0.0009291
+    ##  Residual             2.191e-04 0.0148020
+    ## Number of obs: 69, groups:  SiteID, 10; Year, 7
     ## 
-    ## Fixed effects:  TD ~ CoreTemp_C 
-    ##                  Value   Std.Error DF   t-value p-value
-    ## (Intercept)  1.0054970 0.007699354 58 130.59499       0
-    ## CoreTemp_C  -0.0013291 0.000303230 58  -4.38324       0
-    ##  Correlation: 
+    ## Fixed effects:
+    ##               Estimate Std. Error         df t value Pr(>|t|)    
+    ## (Intercept)  1.0053254  0.0077248 23.5297689 130.143  < 2e-16 ***
+    ## CoreTemp_C  -0.0013217  0.0003041 30.8988469  -4.347 0.000139 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
     ##            (Intr)
     ## CoreTemp_C -0.913
-    ## 
-    ## Standardized Within-Group Residuals:
-    ##        Min         Q1        Med         Q3        Max 
-    ## -5.4804272 -0.3030917  0.1366075  0.4592193  1.5723345 
-    ## 
-    ## Number of Observations: 69
-    ## Number of Groups: 10
 
 ``` r
-path_TD_temp.model.sig = ifelse(path_TD_temp.model.sum$tTable[10] < 0.05, 1, 2)
+path_TD_temp.model.sig = ifelse(path_TD_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 path_TD_temp.plot = ggplot(data=path_FR.df, aes(x=CoreTemp_C, y=TD)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = path_TD_temp.model.sum$tTable[1], 
-              slope = path_TD_temp.model.sum$tTable[2],
+  geom_abline(intercept = path_TD_temp.model.sum$coefficients[1], 
+              slope = path_TD_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -2057,22 +2122,24 @@ for(FC in unique(path_FR.df$FireClassification)){
 
 path_TD_time.model.reg = path_TD_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
 path_TD_time.model.reg
 ```
 
-    ## # A tibble: 2 × 5
-    ##   FireClassification  p_slope Intercept    Year sig   
-    ##   <chr>                 <dbl>     <dbl>   <dbl> <chr> 
-    ## 1 FireAffected       0.000848     -7.55 0.00422 < 0.05
-    ## 2 Reference          0.0853       -1.40 0.00118 ≥ 0.05
+    ## # A tibble: 2 × 6
+    ##   FireClassification SE_slope  p_slope Intercept    Year sig   
+    ##   <chr>                 <dbl>    <dbl>     <dbl>   <dbl> <chr> 
+    ## 1 FireAffected       0.00117  0.000848     -7.55 0.00422 < 0.05
+    ## 2 Reference          0.000645 0.0853       -1.40 0.00118 ≥ 0.05
 
 ``` r
 path_TD_time.plot = ggplot(data=path_FR.df, aes(x=Year, y=TD)) +
@@ -2107,7 +2174,7 @@ cowplot::plot_grid(path_TD_FC.plot + theme(legend.position = "none"),
                    path_TD.leg, labels=c("A", "B", "C", ""), label_size = 8)
 ```
 
-![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
 
 ## Plot all together
 
@@ -2138,10 +2205,10 @@ path_FR_TD_FD.plots = cowplot::plot_grid(cowplot::plot_grid(path_FR_FC.plot + la
 path_FR_TD_FD.plots
 ```
 
-![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+![](A3_MAGs_Functional_Redundancy_files/figure-gfm/unnamed-chunk-33-1.png)<!-- -->
 
 ``` r
-ggsave(path_FR_TD_FD.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS10.tiff",
+ggsave(path_FR_TD_FD.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS10.tiff",
        device="tiff", width=3.5, height=7, units="in", bg = "white")
 ```
 
@@ -2153,7 +2220,7 @@ sessionInfo()
 
     ## R version 4.4.1 (2024-06-14)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Ventura 13.0.1
+    ## Running under: macOS 26.3.1
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
@@ -2169,58 +2236,60 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] ggkegg_1.3.4    tidygraph_1.3.1 igraph_2.0.3    XML_3.99-0.17  
-    ##  [5] ggraph_2.2.1    ggplot2_3.5.2   adiv_2.2.1      ecotraj_1.1.0  
-    ##  [9] Rcpp_1.0.13     Nonpareil_3.5.3 picante_1.8.2   nlme_3.1-166   
-    ## [13] vegan_2.6-8     lattice_0.22-6  permute_0.9-7   readxl_1.4.3   
-    ## [17] ape_5.8         phyloseq_1.48.0 dplyr_1.1.4    
+    ##  [1] lmerTest_3.2-0  lme4_1.1-37     Matrix_1.7-0    ggkegg_1.3.4   
+    ##  [5] tidygraph_1.3.1 igraph_2.0.3    XML_3.99-0.17   ggraph_2.2.1   
+    ##  [9] ggplot2_4.0.1   adiv_2.2.1      ecotraj_1.1.0   Rcpp_1.1.0     
+    ## [13] Nonpareil_3.5.3 picante_1.8.2   nlme_3.1-166    vegan_2.7-1    
+    ## [17] permute_0.9-7   readxl_1.4.3    ape_5.8         phyloseq_1.48.0
+    ## [21] dplyr_1.1.4    
     ## 
     ## loaded via a namespace (and not attached):
-    ##   [1] RColorBrewer_1.1-3      rstudioapi_0.16.0       jsonlite_1.8.8         
-    ##   [4] magrittr_2.0.3          magick_2.8.4            farver_2.1.2           
-    ##   [7] rmarkdown_2.29          ragg_1.3.2              GlobalOptions_0.1.2    
-    ##  [10] adegraphics_1.0-21      zlibbioc_1.50.0         vctrs_0.6.5            
-    ##  [13] multtest_2.60.0         memoise_2.0.1           base64enc_0.1-3        
-    ##  [16] htmltools_0.5.8.1       progress_1.2.3          curl_5.2.2             
-    ##  [19] DEoptim_2.2-8           cellranger_1.1.0        Rhdf5lib_1.26.0        
-    ##  [22] rhdf5_2.48.0            KernSmooth_2.23-24      htmlwidgets_1.6.4      
-    ##  [25] plyr_1.8.9              cachem_1.1.0            uuid_1.2-1             
-    ##  [28] lifecycle_1.0.4         iterators_1.0.14        pkgconfig_2.0.3        
-    ##  [31] Matrix_1.7-0            R6_2.5.1                fastmap_1.2.0          
-    ##  [34] GenomeInfoDbData_1.2.12 digest_0.6.37           numDeriv_2016.8-1.1    
-    ##  [37] colorspace_2.1-1        patchwork_1.2.0         AnnotationDbi_1.66.0   
-    ##  [40] S4Vectors_0.42.1        phylobase_0.8.12        textshaping_0.4.0      
-    ##  [43] RSQLite_2.3.7           org.Hs.eg.db_3.19.1     labeling_0.4.3         
-    ##  [46] filelock_1.0.3          clusterGeneration_1.3.8 fansi_1.0.6            
-    ##  [49] httr_1.4.7              polyclip_1.10-7         mgcv_1.9-1             
-    ##  [52] compiler_4.4.1          bit64_4.0.5             withr_3.0.1            
-    ##  [55] doParallel_1.0.17       optimParallel_1.0-2     DBI_1.2.3              
-    ##  [58] viridis_0.6.5           highr_0.11              ggforce_0.4.2          
-    ##  [61] maps_3.4.2              MASS_7.3-61             rjson_0.2.22           
-    ##  [64] scatterplot3d_0.3-44    biomformat_1.32.0       tools_4.4.1            
-    ##  [67] rncl_0.8.7              phytools_2.3-0          glue_1.7.0             
-    ##  [70] quadprog_1.5-8          rhdf5filters_1.16.0     shadowtext_0.1.4       
-    ##  [73] grid_4.4.1              cluster_2.1.6           reshape2_1.4.4         
-    ##  [76] ade4_1.7-22             generics_0.1.3          lpSolve_5.6.20         
-    ##  [79] gtable_0.3.5            tidyr_1.3.1             data.table_1.16.0      
-    ##  [82] hms_1.1.3               sp_2.1-4                xml2_1.3.6             
-    ##  [85] utf8_1.2.4              XVector_0.44.0          BiocGenerics_0.50.0    
-    ##  [88] ggrepel_0.9.5           foreach_1.5.2           pillar_1.9.0           
-    ##  [91] stringr_1.5.1           splines_4.4.1           Kendall_2.2.1          
-    ##  [94] tweenr_2.0.3            BiocFileCache_2.12.0    bit_4.0.5              
-    ##  [97] survival_3.7-0          deldir_2.0-4            tidyselect_1.2.1       
-    ## [100] Biostrings_2.72.1       knitr_1.48              gridExtra_2.3          
-    ## [103] IRanges_2.38.1          stats4_4.4.1            xfun_0.52              
-    ## [106] graphlayouts_1.1.1      expm_1.0-0              Biobase_2.64.0         
-    ## [109] stringi_1.8.4           UCSC.utils_1.0.0        yaml_2.3.10            
-    ## [112] boot_1.3-31             evaluate_0.24.0         codetools_0.2-20       
-    ## [115] interp_1.1-6            tibble_3.2.1            cli_3.6.3              
-    ## [118] systemfonts_1.1.0       munsell_0.5.1           GenomeInfoDb_1.40.1    
-    ## [121] dbplyr_2.5.0            coda_0.19-4.1           png_0.1-8              
-    ## [124] parallel_4.4.1          blob_1.2.4              RNeXML_2.4.11          
-    ## [127] rgl_1.3.1               prettyunits_1.2.0       latticeExtra_0.6-30    
-    ## [130] jpeg_0.1-10             phangorn_2.11.1         viridisLite_0.4.2      
-    ## [133] scales_1.3.0            purrr_1.0.2             crayon_1.5.3           
-    ## [136] combinat_0.0-8          GetoptLong_1.0.5        rlang_1.1.4            
-    ## [139] cowplot_1.1.3           KEGGREST_1.44.1         fastmatch_1.1-4        
-    ## [142] mnormt_2.1.1
+    ##   [1] splines_4.4.1           filelock_1.0.3          tibble_3.2.1           
+    ##   [4] cellranger_1.1.0        polyclip_1.10-7         lifecycle_1.0.4        
+    ##   [7] Rdpack_2.6.4            doParallel_1.0.17       lattice_0.22-6         
+    ##  [10] MASS_7.3-61             magrittr_2.0.3          rmarkdown_2.29         
+    ##  [13] yaml_2.3.10             sp_2.1-4                cowplot_1.1.3          
+    ##  [16] DBI_1.2.3               minqa_1.2.8             RColorBrewer_1.1-3     
+    ##  [19] ade4_1.7-22             maps_3.4.2              zlibbioc_1.50.0        
+    ##  [22] expm_1.0-0              quadprog_1.5-8          purrr_1.0.2            
+    ##  [25] Kendall_2.2.1           BiocGenerics_0.50.0     rgl_1.3.1              
+    ##  [28] tweenr_2.0.3            GenomeInfoDbData_1.2.12 IRanges_2.38.1         
+    ##  [31] S4Vectors_0.42.1        ggrepel_0.9.5           codetools_0.2-20       
+    ##  [34] xml2_1.3.6              ggforce_0.4.2           tidyselect_1.2.1       
+    ##  [37] RNeXML_2.4.11           UCSC.utils_1.0.0        farver_2.1.2           
+    ##  [40] viridis_0.6.5           stats4_4.4.1            BiocFileCache_2.12.0   
+    ##  [43] base64enc_0.1-3         jsonlite_1.8.8          GetoptLong_1.0.5       
+    ##  [46] multtest_2.60.0         phylobase_0.8.12        survival_3.7-0         
+    ##  [49] iterators_1.0.14        systemfonts_1.3.1       foreach_1.5.2          
+    ##  [52] tools_4.4.1             progress_1.2.3          ragg_1.3.2             
+    ##  [55] glue_1.7.0              mnormt_2.1.1            gridExtra_2.3          
+    ##  [58] xfun_0.52               mgcv_1.9-1              GenomeInfoDb_1.40.1    
+    ##  [61] phytools_2.3-0          withr_3.0.1             numDeriv_2016.8-1.1    
+    ##  [64] combinat_0.0-8          fastmap_1.2.0           latticeExtra_0.6-30    
+    ##  [67] boot_1.3-31             rhdf5filters_1.16.0     fansi_1.0.6            
+    ##  [70] digest_0.6.37           R6_2.5.1                textshaping_0.4.0      
+    ##  [73] colorspace_2.1-1        lpSolve_5.6.20          jpeg_0.1-10            
+    ##  [76] RSQLite_2.3.7           utf8_1.2.4              tidyr_1.3.1            
+    ##  [79] generics_0.1.3          data.table_1.16.0       clusterGeneration_1.3.8
+    ##  [82] prettyunits_1.2.0       graphlayouts_1.1.1      httr_1.4.7             
+    ##  [85] htmlwidgets_1.6.4       scatterplot3d_0.3-44    pkgconfig_2.0.3        
+    ##  [88] gtable_0.3.6            blob_1.2.4              S7_0.2.1               
+    ##  [91] XVector_0.44.0          adegraphics_1.0-21      shadowtext_0.1.4       
+    ##  [94] htmltools_0.5.8.1       biomformat_1.32.0       scales_1.4.0           
+    ##  [97] Biobase_2.64.0          png_0.1-8               reformulas_0.4.0       
+    ## [100] knitr_1.48              rstudioapi_0.16.0       reshape2_1.4.4         
+    ## [103] rncl_0.8.7              rjson_0.2.22            uuid_1.2-1             
+    ## [106] coda_0.19-4.1           curl_5.2.2              nloptr_2.2.1           
+    ## [109] org.Hs.eg.db_3.19.1     cachem_1.1.0            rhdf5_2.48.0           
+    ## [112] GlobalOptions_0.1.2     stringr_1.5.1           DEoptim_2.2-8          
+    ## [115] KernSmooth_2.23-24      parallel_4.4.1          AnnotationDbi_1.66.0   
+    ## [118] pillar_1.9.0            grid_4.4.1              vctrs_0.6.5            
+    ## [121] dbplyr_2.5.0            cluster_2.1.6           evaluate_0.24.0        
+    ## [124] magick_2.8.4            cli_3.6.3               compiler_4.4.1         
+    ## [127] rlang_1.1.4             crayon_1.5.3            labeling_0.4.3         
+    ## [130] interp_1.1-6            plyr_1.8.9              stringi_1.8.4          
+    ## [133] viridisLite_0.4.2       deldir_2.0-4            Biostrings_2.72.1      
+    ## [136] optimParallel_1.0-2     hms_1.1.3               patchwork_1.2.0        
+    ## [139] bit64_4.0.5             Rhdf5lib_1.26.0         KEGGREST_1.44.1        
+    ## [142] highr_0.11              rbibutils_2.3           memoise_2.0.1          
+    ## [145] phangorn_2.11.1         fastmatch_1.1-4         bit_4.0.5

@@ -28,8 +28,9 @@ library(jsonlite)
 library(vegan)
 library(picante)
 library(Nonpareil)
+library(lme4)
+library(lmerTest)
 library(ecotraj)
-library(adiv)
 library(ggkegg)
 
 # Libraries for plotting
@@ -111,7 +112,7 @@ KEGG_long.df = read.table("/Users/sambarnett/Documents/Shade_lab/Centralia_proje
   left_join(mapped_reads.df, by = "SequenceID") %>%
   left_join(read.table("/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Data/Annotations/prokka_CDS_annotations.txt",
                        header=TRUE, sep="\t", comment.char = "", quote = "") %>%
-              select(locus_tag, SequenceID, length_bp)) %>%
+              select(locus_tag, SequenceID, length_bp, ContigID)) %>%
   mutate(RPKM = mapped_reads/((length_bp/1000)*(total_mapped_reads/1000000))) %>%
   mutate(RPKM = ifelse(is.na(RPKM), 0, RPKM))
 
@@ -205,14 +206,17 @@ Before moving on, lets take a look at the number of these single copy genes we s
 
 ```{r, warning=FALSE, message=FALSE, fig.height=3.5, fig.width=5}
 # Linear mixed effects over temperature
-SCG_temp.model = lme(mean_RP_genes ~ CoreTemp_C, random = ~1|SiteID, data=left_join(KEGG_SCG.sum, sample.meta))
-SCG_temp.model.sum = data.frame(intercept = summary(SCG_temp.model)$tTable[1],
-                                      slope = summary(SCG_temp.model)$tTable[2],
-                                      p_value = summary(SCG_temp.model)$tTable[10])
+SCG_temp.model.old = lme(mean_RP_genes ~ CoreTemp_C, random = ~1|SiteID, data=left_join(KEGG_SCG.sum, sample.meta))
+SCG_temp.model = lmer(mean_RP_genes ~ CoreTemp_C + (1|SiteID) + (1|Year), data=left_join(KEGG_SCG.sum, sample.meta))
+
+SCG_temp.model.sum = data.frame(intercept = summary(SCG_temp.model)$coefficients[1],
+                                slope = summary(SCG_temp.model)$coefficients[2],
+                                SE = summary(SCG_temp.model)$coefficients[4],
+                                p_value = summary(SCG_temp.model)$coefficients[10])
 
 SCG_temp.model.sum = SCG_temp.model.sum %>%
   mutate(sig = ifelse(p_value < 0.05, "p < 0.05", "p ≥ 0.05"))
-  
+SCG_temp.model.sum
 
 SCG_temp.plot = ggplot(data=left_join(KEGG_SCG.sum, sample.meta), aes(x=CoreTemp_C, y=mean_RP_genes)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
@@ -226,7 +230,7 @@ SCG_temp.plot = ggplot(data=left_join(KEGG_SCG.sum, sample.meta), aes(x=CoreTemp
   guides(fill=guide_legend(override.aes=list(shape=site.shape), ncol = 2))
 SCG_temp.plot
 
-ggsave(SCG_temp.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS11.tiff",
+ggsave(SCG_temp.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS11.tiff",
        device="tiff", width=5, height=3.5, units="in", bg = "white")
 
 ```
@@ -325,11 +329,13 @@ Now lets quantify the per-genome investment in these nitrogen cycling pathways. 
 # Linear mixed effects over temperature
 Ncyc_temp.model.sum = data.frame()
 for(N_p in unique(N_Cycling.def$N_path)){
-  sub.Ncyc_temp.model = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=filter(KEGG_N_Cycling.sum, N_path == N_p))
+  sub.Ncyc_temp.model.old = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=filter(KEGG_N_Cycling.sum, N_path == N_p))
+  sub.Ncyc_temp.model = lmer(pop_invest ~ CoreTemp_C + (1|SiteID) + (1|Year), data=filter(KEGG_N_Cycling.sum, N_path == N_p))
   Ncyc_temp.model.sum = rbind(Ncyc_temp.model.sum,
-                              data.frame(intercept = summary(sub.Ncyc_temp.model)$tTable[1],
-                                         slope = summary(sub.Ncyc_temp.model)$tTable[2],
-                                         p_value = summary(sub.Ncyc_temp.model)$tTable[10],
+                              data.frame(intercept = summary(sub.Ncyc_temp.model)$coefficients[1],
+                                         slope = summary(sub.Ncyc_temp.model)$coefficients[2],
+                                         SE = summary(sub.Ncyc_temp.model)$coefficients[4],
+                                         p_value = summary(sub.Ncyc_temp.model)$coefficients[10],
                                          N_path = N_p))
 }
 
@@ -337,6 +343,7 @@ for(N_p in unique(N_Cycling.def$N_path)){
 Ncyc_temp.model.sum = Ncyc_temp.model.sum %>%
   mutate(padj = p.adjust(p_value, method = "BH")) %>%
   mutate(sig = ifelse(padj < 0.05, "p < 0.05", "p ≥ 0.05"))
+Ncyc_temp.model.sum
   
 Ncyc_temp.plot = ggplot(data=KEGG_N_Cycling.sum, aes(x=CoreTemp_C, y=pop_invest)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
@@ -357,7 +364,7 @@ Ncyc_temp.plot = ggplot(data=KEGG_N_Cycling.sum, aes(x=CoreTemp_C, y=pop_invest)
 Ncyc_temp.plot
 
 # Save plot for publication
-ggsave(Ncyc_temp.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Fig3.tiff",
+ggsave(Ncyc_temp.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Fig3.tiff",
        device="tiff", width=7, height=4.5, units="in", bg = "white")
 ```
 
@@ -369,11 +376,13 @@ Next lets see how nitrogen cycling genes change over concentrations of nitrate a
 # Linear mixed effects over nitrate levels
 Ncyc_nitrate.model.sum = data.frame()
 for(N_p in unique(N_Cycling.def$N_path)){
-  sub.Ncyc_nitrate.model = lme(pop_invest ~ NO3N_ppm, random = ~1|SiteID, data=filter(KEGG_N_Cycling.sum, N_path == N_p))
+  sub.Ncyc_nitrate.model.old = lme(pop_invest ~ NO3N_ppm, random = ~1|SiteID, data=filter(KEGG_N_Cycling.sum, N_path == N_p))
+  sub.Ncyc_nitrate.model = lmer(pop_invest ~ NO3N_ppm + (1|SiteID) + (1|Year), data=filter(KEGG_N_Cycling.sum, N_path == N_p))
   Ncyc_nitrate.model.sum = rbind(Ncyc_nitrate.model.sum,
-                              data.frame(intercept = summary(sub.Ncyc_nitrate.model)$tTable[1],
-                                         slope = summary(sub.Ncyc_nitrate.model)$tTable[2],
-                                         p_value = summary(sub.Ncyc_nitrate.model)$tTable[10],
+                              data.frame(intercept = summary(sub.Ncyc_nitrate.model)$coefficients[1],
+                                         slope = summary(sub.Ncyc_nitrate.model)$coefficients[2],
+                                         SE = summary(sub.Ncyc_nitrate.model)$coefficients[4],
+                                         p_value = summary(sub.Ncyc_nitrate.model)$coefficients[10],
                                          N_path = N_p))
 }
   
@@ -513,18 +522,20 @@ Now lets quantify the per-genome investment in these carbon cycling pathways.
 # Linear mixed effects over temperature
 Ccyc_temp.model.sum = data.frame()
 for(N_p in unique(Carbo_kegg.df$C_path)){
-  sub.Ccyc_temp.model = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=filter(KEGG_Carbo.sum, C_path == N_p))
+  sub.Ccyc_temp.model.old = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=filter(KEGG_Carbo.sum, C_path == N_p))
+  sub.Ccyc_temp.model = lmer(pop_invest ~ CoreTemp_C + (1|SiteID) + (1|Year), data=filter(KEGG_Carbo.sum, C_path == N_p))
   Ccyc_temp.model.sum = rbind(Ccyc_temp.model.sum,
-                              data.frame(intercept = summary(sub.Ccyc_temp.model)$tTable[1],
-                                         slope = summary(sub.Ccyc_temp.model)$tTable[2],
-                                         p_value = summary(sub.Ccyc_temp.model)$tTable[10],
+                              data.frame(intercept = summary(sub.Ccyc_temp.model)$coefficients[1],
+                                         slope = summary(sub.Ccyc_temp.model)$coefficients[2],
+                                         SE = summary(sub.Ccyc_temp.model)$coefficients[4],
+                                         p_value = summary(sub.Ccyc_temp.model)$coefficients[10],
                                          C_path = N_p))
 }
   
 Ccyc_temp.model.sum = Ccyc_temp.model.sum %>%
   mutate(padj = p.adjust(p_value, method = "BH")) %>%
   mutate(sig = ifelse(padj < 0.05, "p < 0.05", "p ≥ 0.05"))
-  
+Ccyc_temp.model.sum
 
 Ccyc_temp.plot = ggplot(data=KEGG_Carbo.sum, aes(x=CoreTemp_C, y=pop_invest)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
@@ -544,7 +555,7 @@ Ccyc_temp.plot = ggplot(data=KEGG_Carbo.sum, aes(x=CoreTemp_C, y=pop_invest)) +
 Ccyc_temp.plot
 
 # Save plot for publications
-ggsave(Ccyc_temp.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Fig4.tiff",
+ggsave(Ccyc_temp.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Fig4.tiff",
        device="tiff", width=7, height=7, units="in", bg = "white")
 ```
 
@@ -609,12 +620,13 @@ CAZyme_FC.plot = ggplot(data=CAZyme.sum, aes(x=FireClassification, y=pop_invest)
 CAZyme_FC.plot
 
 # Linear mixed effects over temperature
-CAZyme_temp.model = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=CAZyme.sum)
+CAZyme_temp.model.old = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=CAZyme.sum)
+CAZyme_temp.model = lmer(pop_invest ~ CoreTemp_C + (1|SiteID) + (1|Year), data=CAZyme.sum)
 summary(CAZyme_temp.model)
 
-CAZyme_temp.model.sum = data.frame(intercept = summary(CAZyme_temp.model)$tTable[1],
-                                   slope = summary(CAZyme_temp.model)$tTable[2],
-                                   p_value = summary(CAZyme_temp.model)$tTable[10])
+CAZyme_temp.model.sum = data.frame(intercept = summary(CAZyme_temp.model)$coefficients[1],
+                                   slope = summary(CAZyme_temp.model)$coefficients[2],
+                                   p_value = summary(CAZyme_temp.model)$coefficients[10])
 
 CAZyme_temp.plot = ggplot(data=CAZyme.sum, aes(x=CoreTemp_C, y=pop_invest)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
@@ -653,13 +665,13 @@ GH_FC.plot = ggplot(data=GH.sum, aes(x=FireClassification, y=pop_invest)) +
 GH_FC.plot
 
 # Linear mixed effects over temperature
-GH_temp.model = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=GH.sum)
+GH_temp.model.old = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=GH.sum)
+GH_temp.model = lmer(pop_invest ~ CoreTemp_C + (1|SiteID) + (1|Year), data=GH.sum)
 summary(GH_temp.model)
 
-
-GH_temp.model.sum = data.frame(intercept = summary(GH_temp.model)$tTable[1],
-                                   slope = summary(GH_temp.model)$tTable[2],
-                                   p_value = summary(GH_temp.model)$tTable[10])
+GH_temp.model.sum = data.frame(intercept = summary(GH_temp.model)$coefficients[1],
+                                   slope = summary(GH_temp.model)$coefficients[2],
+                                   p_value = summary(GH_temp.model)$coefficients[10])
 
 GH_temp.plot = ggplot(data=GH.sum, aes(x=CoreTemp_C, y=pop_invest)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
@@ -690,7 +702,7 @@ CAZyme_GH_FC.plot = cowplot::plot_grid(cowplot::plot_grid(CAZyme_FC.plot + theme
 CAZyme_GH_FC.plot
 
 # Save plot for publications
-ggsave(CAZyme_GH_FC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/FigS12.tiff",
+ggsave(CAZyme_GH_FC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS12.tiff",
        device="tiff", width=5, height=5, units="in", bg = "white")
 ```
 
@@ -704,7 +716,7 @@ First we need to find the transcription factor genes and count them.
 
 ```{r, warning=FALSE, message=FALSE}
 # Get the list of transcription factor ko
-TFac.def = read_xlsx("/Users/sambarnett/Desktop/Transcription_factor_kos.xlsx") %>%
+TFac.def = read_xlsx("/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Data/Transcription_factor_kos.xlsx") %>%
   rename(KEGG_ortho_kofamscan = ko, ER_path = family) %>%
   select(KEGG_ortho_kofamscan, ER_path) %>%
   mutate(ER_path = gsub(" transcriptional regulator", "", ER_path))
@@ -731,11 +743,13 @@ Now lets see if the number of transcription factor genes-per-genome varies acros
 TFac_temp.model.sum = data.frame()
 for(N_p in unique(TFac.def$ER_path)){
   if (nrow(filter(KEGG_TFac.sum, ER_path == N_p)) > 0){
-    sub.TFac_temp.model = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=filter(KEGG_TFac.sum, ER_path == N_p))
+    sub.TFac_temp.model.old = lme(pop_invest ~ CoreTemp_C, random = ~1|SiteID, data=filter(KEGG_TFac.sum, ER_path == N_p))
+    sub.TFac_temp.model = lmer(pop_invest ~ CoreTemp_C + (1|SiteID) + (1|Year), data=filter(KEGG_TFac.sum, ER_path == N_p))
     TFac_temp.model.sum = rbind(TFac_temp.model.sum,
-                                data.frame(intercept = summary(sub.TFac_temp.model)$tTable[1],
-                                           slope = summary(sub.TFac_temp.model)$tTable[2],
-                                           p_value = summary(sub.TFac_temp.model)$tTable[10],
+                                data.frame(intercept = summary(sub.TFac_temp.model)$coefficients[1],
+                                           slope = summary(sub.TFac_temp.model)$coefficients[2],
+                                           SE = summary(sub.TFac_temp.model)$coefficients[4],
+                                           p_value = summary(sub.TFac_temp.model)$coefficients[10],
                                            ER_path = N_p))
   } else{
     print(paste("No", N_p, "found"))
@@ -745,6 +759,8 @@ for(N_p in unique(TFac.def$ER_path)){
 TFac_temp.model.sum = TFac_temp.model.sum %>%
   mutate(padj = p.adjust(p_value, method = "BH")) %>%
   mutate(sig = ifelse(padj < 0.05, "p < 0.05", "p ≥ 0.05"))
+TFac_temp.model.sum %>%
+  filter(padj < 0.05)
 
 sig_TFac_temp = filter(TFac_temp.model.sum, padj < 0.05)$ER_path
   
@@ -765,7 +781,7 @@ TFac_temp.plot = ggplot(data=filter(KEGG_TFac.sum, ER_path %in% sig_TFac_temp), 
 
 TFac_temp.plot
 
-ggsave(TFac_temp.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Fig5.tiff",
+ggsave(TFac_temp.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS13.tiff",
        device="tiff", width=7, height=7, units="in", bg = "white")
 
 
@@ -774,6 +790,72 @@ ggsave(TFac_temp.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_pro
 ## Transcription factor diversity
 
 Now lets take a look at the diversity of the transcription factors found across samples. Diversity may have something to do with the variety and stability of the environments that these microbes live in.
+
+First lets look at all transcription factors regardless of family.
+
+```{r, warning=FALSE, message=FALSE, fig.height=3.5, fig.width=5}
+# Get abundances of KEGG orthologues that are transcription factors. Abundance will be summed RPKM.
+TFac.df = KEGG_long.df %>%
+  inner_join(TFac.def) %>%
+  group_by(SequenceID, ER_path, KEGG_ortho_kofamscan) %>%
+  summarize(sum_RPKM = sum(RPKM)) %>%
+  ungroup
+
+# Calculate alpha diversity (evenness especially) and see if there is a relationship to temperature.
+TFac.mat = TFac.df %>%
+    select(SequenceID, KEGG_ortho_kofamscan, sum_RPKM) %>%
+    tidyr::spread(key=KEGG_ortho_kofamscan, value=sum_RPKM) %>%
+    tibble::column_to_rownames(var="SequenceID") %>%
+    as.matrix
+TFac.mat[is.na(TFac.mat)] = 0
+  
+TFac.diversity = data.frame(richness = specnumber(TFac.mat),
+                            shannon = vegan::diversity(TFac.mat)) %>%
+  tibble::rownames_to_column(var="SequenceID") %>%
+  mutate(evenness = shannon/log(richness)) %>%
+  left_join(sample.meta)
+ 
+# Compare evenness across fire classification
+TFac_diversity_FC.model = wilcox.test(filter(TFac.diversity, FireClassification == "FireAffected")$evenness,
+                                      filter(TFac.diversity, FireClassification == "Reference")$evenness)
+TFac_diversity_FC.model
+
+# Compare evenness across soil temperature
+TFac_diversity_temp.model.old = lme(evenness ~ CoreTemp_C, random = ~1|SiteID, data=TFac.diversity)
+TFac_diversity_temp.model = lmer(evenness ~ CoreTemp_C + (1|SiteID) + (1|Year), data=TFac.diversity)
+TFac_diversity_temp.model.sum = data.frame(intercept = summary(TFac_diversity_temp.model)$coefficients[1],
+                                           slope = summary(TFac_diversity_temp.model)$coefficients[2],
+                                           SE = summary(TFac_diversity_temp.model)$coefficients[4],
+                                           p_value = summary(TFac_diversity_temp.model)$coefficients[10])
+TFac_diversity_temp.model.sum
+
+# Plot results
+TFac_diversity_FC.plot = ggplot(data=TFac.diversity, aes(x=FireClassification, y=evenness)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(height=0, width=0.25, size=2, aes(shape=FireClassification, fill=SiteID)) +
+  scale_shape_manual(values=c("FireAffected" = 24, "Recovered" = 21, "Reference" = 22)) +
+  scale_fill_manual(values=site.col) +
+  labs(x = "Fire Classification", y = "Transcription factor gene evenness") +
+  publication_theme +
+  theme(legend.position = "none")
+
+TFac_diversity_temp.plot = ggplot(data=TFac.diversity, aes(x=CoreTemp_C, y=evenness)) +
+  geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
+  scale_shape_manual(values=FC.shape) +
+  scale_fill_manual(values=site.col) +
+  labs(x="Soil temperature (˚C)", y="Evenness") +
+  publication_theme +
+  theme(legend.position = "bottom",
+        legend.direction = "vertical") +
+  guides(fill=guide_legend(override.aes=list(shape=site.shape), nrow = 2))
+
+cowplot::plot_grid(cowplot::plot_grid(TFac_diversity_FC.plot, TFac_diversity_temp.plot + theme(axis.title.y = element_blank(), legend.position = "none"),
+                                      nrow=1, rel_widths = c(0.5,1)),
+                   g_legend(TFac_diversity_temp.plot), ncol=1, rel_heights = c(1,0.3))
+```
+
+
+Next lets look within families.
 
 ```{r, warning=FALSE, message=FALSE, fig.height=5, fig.width=5}
 # Get abundances of KEGG orthologues that are transcription factors. Abundance will be summed RPKM.
@@ -800,14 +882,16 @@ for (family in unique(TFac.df$ER_path)){
     tibble::rownames_to_column(var="SequenceID") %>%
     mutate(ER_path = family,
            evenness = shannon/log(richness)) %>%
-  left_join(sample.meta)
+    left_join(sample.meta)
   
   if(max(TFac.diversity$richness >= 5)){
-    sub.TFac_temp.model = lme(evenness ~ CoreTemp_C, random = ~1|SiteID, data=filter(TFac.diversity, !is.na(evenness) & !is.infinite(evenness)))
+    sub.TFac_temp.model.old = lme(evenness ~ CoreTemp_C, random = ~1|SiteID, data=filter(TFac.diversity, !is.na(evenness) & !is.infinite(evenness)))
+    sub.TFac_temp.model = lmer(evenness ~ CoreTemp_C + (1|SiteID) + (1|Year), data=filter(TFac.diversity, !is.na(evenness) & !is.infinite(evenness)))
     TFac_evenness_temp.model.sum = rbind(TFac_evenness_temp.model.sum,
-                                         data.frame(intercept = summary(sub.TFac_temp.model)$tTable[1],
-                                                    slope = summary(sub.TFac_temp.model)$tTable[2],
-                                                    p_value = summary(sub.TFac_temp.model)$tTable[10],
+                                         data.frame(intercept = summary(sub.TFac_temp.model)$coefficients[1],
+                                                    slope = summary(sub.TFac_temp.model)$coefficients[2],
+                                                    SE = summary(sub.TFac_temp.model)$coefficients[4],
+                                                    p_value = summary(sub.TFac_temp.model)$coefficients[10],
                                                     ER_path = family))
   }
   TFac_diversity.df = rbind(TFac_diversity.df, 
@@ -820,9 +904,13 @@ TFac_diversity.df = TFac_diversity.df %>%
 TFac_evenness_temp.model.sum = TFac_evenness_temp.model.sum %>%
   mutate(padj = p.adjust(p_value, method = "BH"))
 
+TFac_evenness_temp.model.sum %>%
+  filter(padj < 0.05)
+
 # Get significant families
 sig_TFac_evenness_temp = TFac_evenness_temp.model.sum %>%
-  filter(padj < 0.05)
+  filter(padj < 0.05,
+         ER_path != "Other")
 
 # Plot
 TF_evenness.plot = ggplot(data=filter(TFac_diversity.df, ER_path %in% sig_TFac_evenness_temp$ER_path,
@@ -836,20 +924,23 @@ TF_evenness.plot = ggplot(data=filter(TFac_diversity.df, ER_path %in% sig_TFac_e
   scale_fill_manual(values=site.col) +
   labs(x="Soil temperature (˚C)", y="Evenness") +
   publication_theme +
-  facet_wrap(~ER_path, scales = "free_y", nrow=4) +
+  facet_wrap(~ER_path, scales = "free_y", nrow=2) +
   theme(legend.position = "bottom",
         legend.direction = "vertical") +
   guides(fill=guide_legend(override.aes=list(shape=site.shape), nrow = 2))
 
 TF_evenness.plot
 
-ggsave(TF_evenness.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/FigS13.tiff",
+ggsave(TF_evenness.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Fig5.tiff",
        device="tiff", width=5, height=5, units="in", bg = "white")
 
 ```
+
 
 # Session info
 ```{r}
 sessionInfo()
 ```
+
+
 

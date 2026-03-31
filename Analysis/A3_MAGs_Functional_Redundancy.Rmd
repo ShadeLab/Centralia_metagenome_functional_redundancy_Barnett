@@ -16,6 +16,10 @@ In this notebook, lets look at the metagenome assembled genomes (MAGs) and their
 
 Here are some libraries used in this analysis and the global varaibles that will be used throughout. Mostly variables for consistent plotting.
 ```{r, warning=FALSE, message=FALSE}
+# Clear issue with package adiv
+options(rgl.useNULL=TRUE)
+#.rs.restartR()
+
 # Libraries for data
 library(dplyr)
 library(phyloseq)
@@ -29,6 +33,8 @@ library(Nonpareil)
 library(ecotraj)
 library(adiv)
 library(ggkegg)
+library(lme4)
+library(lmerTest)
 
 # Libraries for plotting
 library(ggplot2)
@@ -319,7 +325,7 @@ MAG_Mapping.plot = cowplot::plot_grid(MAG_Mapping_FC.plot + theme(legend.positio
                                       nrow=1, labels=c("A", "B"), label_size = 8)
 MAG_Mapping.plot
 
-ggsave(MAG_Mapping.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS6.tiff",
+ggsave(MAG_Mapping.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS6.tiff",
        device="tiff", width=7, height=3.5, units="in", bg = "white")
 ```
 
@@ -608,7 +614,7 @@ OTU_MAG_Taxa.plot = ggplot(data=OTU_MAG_RA.df, aes(x=as.factor(Year), y=RA)) +
   guides(fill = guide_legend(nrow=3))
 OTU_MAG_Taxa.plot
 
-ggsave(OTU_MAG_Taxa.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS7.tiff",
+ggsave(OTU_MAG_Taxa.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS7.tiff",
        device="tiff", width=7, height=7, units="in", bg = "white")
 ```
 
@@ -645,7 +651,7 @@ plot(MAG_OTU.procrustes, kind=1)
 plot(MAG_OTU.procrustes, kind=2)
 
 # Save figure
-tiff(filename = "/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS8.tiff", 
+tiff(filename = "/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS8.tiff", 
      width = 5, height = 5, units = "in", res=300)
 plot(MAG_OTU.procrustes, kind=1)
 dev.off()
@@ -694,10 +700,24 @@ MAG_OTU_BC.plot = cowplot::plot_grid(cowplot::plot_grid(OTU_BC.plot + ggtitle("A
                                        ncol=1, rel_heights = c(1,0.3))
 MAG_OTU_BC.plot
 
-ggsave(MAG_OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS9.tiff",
-       device="tiff", width=7, height=5, units="in", bg = "white")
+#ggsave(MAG_OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS9.tiff",
+#       device="tiff", width=7, height=5, units="in", bg = "white")
+
+                   
 
 ```
+
+Save just the MAG plot for supplemental publication
+
+```{r, fig.height=5, fig.width=3.5}
+MAG_BC.plot
+
+ggsave(MAG_BC.plot, 
+       file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS9.tiff",
+       device="tiff", width=3.5, height=5, units="in", bg = "white")
+
+```
+
 
 # Functional redundancy from KEGG orthologues
 
@@ -783,15 +803,17 @@ Now that you've calculated it, compare functional redundancy across temp, time, 
 
 ```{r, warning=FALSE, message=FALSE, fig.width=5, fig.height=5}
 # Linear mixed effects over temperature
-FR_temp.model = lme(FR ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+FR_temp.model.old = lme(FR ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+FR_temp.model = lmer(FR ~ CoreTemp_C + (1|SiteID) + (1|Year), data=FR.df)
+
 FR_temp.model.sum = summary(FR_temp.model)
 FR_temp.model.sum
-FR_temp.model.sig = ifelse(FR_temp.model.sum$tTable[10] < 0.05, 1, 2)
+FR_temp.model.sig = ifelse(FR_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 FR_temp.plot = ggplot(data=FR.df, aes(x=CoreTemp_C, y=FR)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = FR_temp.model.sum$tTable[1], 
-              slope = FR_temp.model.sum$tTable[2],
+  geom_abline(intercept = FR_temp.model.sum$coefficients[1], 
+              slope = FR_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -836,11 +858,13 @@ for(FC in unique(FR.df$FireClassification)){
 
 FR_time.model.reg = FR_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
@@ -885,15 +909,17 @@ cowplot::plot_grid(FR_FC.plot + theme(legend.position = "none"),
 Now lets look at the first component of functional redundancy, compare functional diversity across temp, time, and fire classification.
 ```{r, warning=FALSE, message=FALSE, fig.width=5, fig.height=5}
 # Linear mixed effects over temperature
-FD_temp.model = lme(FD ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+FD_temp.model.old = lme(FD ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+FD_temp.model = lmer(FD ~ CoreTemp_C + (1|SiteID) + (1|Year), data=FR.df)
+
 FD_temp.model.sum = summary(FD_temp.model)
 FD_temp.model.sum
-FD_temp.model.sig = ifelse(FD_temp.model.sum$tTable[10] < 0.05, 1, 2)
+FD_temp.model.sig = ifelse(FD_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 FD_temp.plot = ggplot(data=FR.df, aes(x=CoreTemp_C, y=FD)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = FD_temp.model.sum$tTable[1], 
-              slope = FD_temp.model.sum$tTable[2],
+  geom_abline(intercept = FD_temp.model.sum$coefficients[1], 
+              slope = FD_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -938,11 +964,13 @@ for(FC in unique(FR.df$FireClassification)){
 
 FD_time.model.reg = FD_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
@@ -987,15 +1015,17 @@ Now lets look at the second component of functional redundancy, compare taxonomi
 
 ```{r, warning=FALSE, message=FALSE, fig.width=5, fig.height=5}
 # Linear mixed effects over temperature
-TD_temp.model = lme(TD ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+TD_temp.model.old = lme(TD ~ CoreTemp_C, random = ~1|SiteID, data=FR.df)
+TD_temp.model = lmer(TD ~ CoreTemp_C + (1|SiteID) + (1|Year), data=FR.df)
+
 TD_temp.model.sum = summary(TD_temp.model)
 TD_temp.model.sum
-TD_temp.model.sig = ifelse(TD_temp.model.sum$tTable[10] < 0.05, 1, 2)
+TD_temp.model.sig = ifelse(TD_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 TD_temp.plot = ggplot(data=FR.df, aes(x=CoreTemp_C, y=TD)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = TD_temp.model.sum$tTable[1], 
-              slope = TD_temp.model.sum$tTable[2],
+  geom_abline(intercept = TD_temp.model.sum$coefficients[1], 
+              slope = TD_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1040,11 +1070,13 @@ for(FC in unique(FR.df$FireClassification)){
 
 TD_time.model.reg = TD_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
@@ -1112,13 +1144,13 @@ FR_TD_FD.plots = cowplot::plot_grid(cowplot::plot_grid(FR_FC.plot + labs(y="Func
 FR_TD_FD.plots
 
 
-#ggsave(FR_TD_FD.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/Fig2.tiff",
-#       device="tiff", width=3.5, height=7, units="in", bg = "white")
+ggsave(FR_TD_FD.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Fig2.tiff",
+       device="tiff", width=3.5, height=7, units="in", bg = "white")
 
 
 ```
 
-# Functional redundancy from KEGG orthologues
+# Functional redundancy from gapseq pathways
 
 Because MAGs are not complete genomes we may be missing genes in some MAGs that are present in others that may lead to the appearance of greater functional difference than there actually is. To try to get around this, lets double check these results using pathways that allow for incompleteness. We used gapseq to annotate pathways.
 
@@ -1205,15 +1237,16 @@ Now that you've calculated it, compare functional redundancy across temp, time, 
 
 ```{r, warning=FALSE, message=FALSE, fig.width=5, fig.height=5}
 # Linear mixed effects over temperature
-path_FR_temp.model = lme(FR ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_FR_temp.model.old = lme(FR ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_FR_temp.model = lmer(FR ~ CoreTemp_C + (1|SiteID) + (1|Year), data=path_FR.df)
 path_FR_temp.model.sum = summary(path_FR_temp.model)
 path_FR_temp.model.sum
-path_FR_temp.model.sig = ifelse(path_FR_temp.model.sum$tTable[10] < 0.05, 1, 2)
+path_FR_temp.model.sig = ifelse(path_FR_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 path_FR_temp.plot = ggplot(data=path_FR.df, aes(x=CoreTemp_C, y=FR)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = path_FR_temp.model.sum$tTable[1], 
-              slope = path_FR_temp.model.sum$tTable[2],
+  geom_abline(intercept = path_FR_temp.model.sum$coefficients[1], 
+              slope = path_FR_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1257,12 +1290,14 @@ for(FC in unique(path_FR.df$FireClassification)){
 }
 
 path_FR_time.model.reg = path_FR_time.model.df %>%
-  mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
@@ -1307,15 +1342,16 @@ cowplot::plot_grid(path_FR_FC.plot + theme(legend.position = "none"),
 Now lets look at the first component of functional redundancy, compare functional diversity across temp, time, and fire classification.
 ```{r, warning=FALSE, message=FALSE, fig.width=5, fig.height=5}
 # Linear mixed effects over temperature
-path_FD_temp.model = lme(FD ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_FD_temp.model.old = lme(FD ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_FD_temp.model = lmer(FD ~ CoreTemp_C + (1|SiteID) + (1|Year), data=path_FR.df)
 path_FD_temp.model.sum = summary(path_FD_temp.model)
 path_FD_temp.model.sum
-path_FD_temp.model.sig = ifelse(path_FD_temp.model.sum$tTable[10] < 0.05, 1, 2)
+path_FD_temp.model.sig = ifelse(path_FD_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 path_FD_temp.plot = ggplot(data=path_FR.df, aes(x=CoreTemp_C, y=FD)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = path_FD_temp.model.sum$tTable[1], 
-              slope = path_FD_temp.model.sum$tTable[2],
+  geom_abline(intercept = path_FD_temp.model.sum$coefficients[1], 
+              slope = path_FD_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1360,11 +1396,13 @@ for(FC in unique(path_FR.df$FireClassification)){
 
 path_FD_time.model.reg = path_FD_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
@@ -1411,15 +1449,16 @@ Now lets look at the second component of functional redundancy, compare taxonomi
 
 ```{r, warning=FALSE, message=FALSE, fig.width=5, fig.height=5}
 # Linear mixed effects over temperature
-path_TD_temp.model = lme(TD ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_TD_temp.model.old = lme(TD ~ CoreTemp_C, random = ~1|SiteID, data=path_FR.df)
+path_TD_temp.model = lmer(TD ~ CoreTemp_C + (1|SiteID) + (1|Year), data=path_FR.df)
 path_TD_temp.model.sum = summary(path_TD_temp.model)
 path_TD_temp.model.sum
-path_TD_temp.model.sig = ifelse(path_TD_temp.model.sum$tTable[10] < 0.05, 1, 2)
+path_TD_temp.model.sig = ifelse(path_TD_temp.model.sum$coefficients[10] < 0.05, 1, 2)
 
 path_TD_temp.plot = ggplot(data=path_FR.df, aes(x=CoreTemp_C, y=TD)) +
   geom_point(aes(shape=FireClassification, fill=SiteID), size=2) +
-  geom_abline(intercept = path_TD_temp.model.sum$tTable[1], 
-              slope = path_TD_temp.model.sum$tTable[2],
+  geom_abline(intercept = path_TD_temp.model.sum$coefficients[1], 
+              slope = path_TD_temp.model.sum$coefficients[2],
               linetype = 2, linewidth=1, color="black") +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1464,11 +1503,13 @@ for(FC in unique(path_FR.df$FireClassification)){
 
 path_TD_time.model.reg = path_TD_time.model.df %>%
   mutate(p_slope = ifelse(factor == "Year", p.value, 1),
-         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor),
+         SE_slope = ifelse(factor == "Year", Std.Error, 0)) %>%
   group_by(FireClassification) %>%
-  mutate(p_slope = min(p_slope)) %>%
+  mutate(p_slope = min(p_slope),
+         SE_slope = max(SE_slope)) %>%
   ungroup %>%
-  select(FireClassification, factor, Value, p_slope) %>%
+  select(FireClassification, factor, Value, SE_slope, p_slope) %>%
   tidyr::spread(key="factor", value="Value") %>%
   mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
 
@@ -1536,7 +1577,7 @@ path_FR_TD_FD.plots = cowplot::plot_grid(cowplot::plot_grid(path_FR_FC.plot + la
 path_FR_TD_FD.plots
 
 
-ggsave(path_FR_TD_FD.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS10.tiff",
+ggsave(path_FR_TD_FD.plots, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS10.tiff",
        device="tiff", width=3.5, height=7, units="in", bg = "white")
 
 
@@ -1548,4 +1589,5 @@ ggsave(path_FR_TD_FD.plots, file="/Users/sambarnett/Documents/Shade_lab/Centrali
 ```{r}
 sessionInfo()
 ```
+
 

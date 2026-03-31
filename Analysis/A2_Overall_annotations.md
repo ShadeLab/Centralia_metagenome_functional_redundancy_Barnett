@@ -1,7 +1,7 @@
 Analysis of overall annotations
 ================
 Sam Barnett
-08 August, 2025
+31 March, 2026
 
 - [Introduction](#introduction)
   - [Librarys and global variables](#librarys-and-global-variables)
@@ -54,6 +54,8 @@ library(picante)
 library(Nonpareil)
 library(ecotraj)
 library(betapart)
+library(lme4)
+library(lmerTest)
 
 # Libraries for plotting
 library(ggplot2)
@@ -267,6 +269,11 @@ OTU_BC.plot
 ```
 
 ![](A2_Overall_annotations_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
+ggsave(OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS3.tiff",
+       device="tiff", width=3.5, height=5, units="in", bg = "white")
+```
 
 # KEGG annotation analysis
 
@@ -512,7 +519,7 @@ cap.plot
 ![](A2_Overall_annotations_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
-ggsave(cap.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS4.tiff",
+ggsave(cap.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS4.tiff",
        device="tiff", width=5, height=5, units="in", bg = "white")
 ```
 
@@ -535,8 +542,8 @@ MetaG_OTU_BC.plot
 ![](A2_Overall_annotations_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
-ggsave(MetaG_OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS3.tiff",
-       device="tiff", width=7, height=5, units="in", bg = "white")
+#ggsave(MetaG_OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS3.tiff",
+#       device="tiff", width=7, height=5, units="in", bg = "white")
 ```
 
 Now lets directly compare them using both a Mantel test and a procrustes
@@ -617,7 +624,7 @@ plot(KEGG_OTU.procrustes, kind=1)
 
 ``` r
 # Save figure
-tiff(filename = "/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS2.tiff", 
+tiff(filename = "/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS2.tiff", 
      width = 5, height = 5, units = "in", res=300)
 plot(KEGG_OTU.procrustes, kind=1)
 dev.off()
@@ -1060,8 +1067,8 @@ full_timelag.plot
 ![](A2_Overall_annotations_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
-#ggsave(full_timelag.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS5.tiff",
-#       device="tiff", width=7, height=5, units="in", bg = "white")
+ggsave(full_timelag.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS5.tiff",
+       device="tiff", width=7, height=5, units="in", bg = "white")
 ```
 
 ## Trajectory analysis
@@ -1241,15 +1248,51 @@ Reference_Dist.df = data.frame(test.dist.mat) %>%
 Now lets plot the similarity over temperature
 
 ``` r
-# Weighted UniFrac
-dist_by_temp.model = lme(mean_dist ~ CoreTemp_C, random = ~1|SiteID, data=Disturbed_Dist.df)
-dist_by_temp.model.sum = summary(dist_by_temp.model)$tTable
-dist_by_temp.model.sum
+# Linear mixed effects model
+dist_by_temp.model.old = lme(mean_dist ~ CoreTemp_C, random = ~1|SiteID, data=Disturbed_Dist.df)
+dist_by_temp.model = lmer(mean_dist ~ CoreTemp_C + (1|SiteID) + (1|Year), data=Disturbed_Dist.df)
+
+## Get regression for plot
+dist_by_temp.model.reg.df = data.frame(summary(dist_by_temp.model)$coefficients) %>%
+  tibble::rownames_to_column(var="factor") %>%
+  mutate(p_slope = ifelse(factor == "CoreTemp_C", Pr...t.., 1),
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+  mutate(p_slope = min(p_slope)) %>%
+  ungroup %>%
+  select(factor, Estimate, p_slope) %>%
+  tidyr::spread(key=factor, value = Estimate) %>%
+  mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
+summary(dist_by_temp.model)
 ```
 
-    ##                    Value    Std.Error DF   t-value      p-value
-    ## (Intercept)  0.738678717 0.0219359257 41 33.674381 1.685833e-31
-    ## CoreTemp_C  -0.001316869 0.0007877245 41 -1.671738 1.021923e-01
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: mean_dist ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: Disturbed_Dist.df
+    ## 
+    ## REML criterion at convergence: -190.4
+    ## 
+    ## Scaled residuals: 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -1.8371 -0.6912 -0.1674  0.6649  2.0651 
+    ## 
+    ## Random effects:
+    ##  Groups   Name        Variance  Std.Dev.
+    ##  SiteID   (Intercept) 0.0000680 0.008246
+    ##  Year     (Intercept) 0.0008508 0.029168
+    ##  Residual             0.0005434 0.023312
+    ## Number of obs: 49, groups:  SiteID, 7; Year, 7
+    ## 
+    ## Fixed effects:
+    ##               Estimate Std. Error         df t value Pr(>|t|)    
+    ## (Intercept)  0.7623493  0.0225924 22.9053187  33.744  < 2e-16 ***
+    ## CoreTemp_C  -0.0021938  0.0007107 20.8056410  -3.087  0.00563 ** 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
+    ##            (Intr)
+    ## CoreTemp_C -0.849
 
 ``` r
 dist_by_temp.plot = ggplot(data=Disturbed_Dist.df, aes(x=CoreTemp_C, y=mean_dist)) +
@@ -1257,6 +1300,9 @@ dist_by_temp.plot = ggplot(data=Disturbed_Dist.df, aes(x=CoreTemp_C, y=mean_dist
   geom_errorbar(aes(ymin=mean_dist-SE_dist, ymax=mean_dist+SE_dist), color="black", size=1, width=0) +
   geom_errorbar(aes(ymin=mean_dist-SE_dist, ymax=mean_dist+SE_dist, color=SiteID), size=0.5, width=0) +
   geom_point(aes(fill=SiteID, shape=FireClassification, size=Year)) +
+  geom_abline(data=filter(dist_by_temp.model.reg.df, p_slope < 0.05), 
+              aes(intercept = Intercept, slope = CoreTemp_C), 
+              linetype = 2, size=1, color="black") +
   scale_size_continuous(range=c(1,4)) +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -1318,14 +1364,51 @@ OTU_Reference_Dist.df = data.frame(test.dist.mat) %>%
 Now lets plot the similarities over temperature
 
 ``` r
-OTU_dist_by_temp.model = lme(mean_dist ~ CoreTemp_C, random = ~1|SiteID, data=OTU_Disturbed_Dist.df)
-OTU_dist_by_temp.model.sum = summary(OTU_dist_by_temp.model)$tTable
-OTU_dist_by_temp.model.sum
+# Linear mixed effects model
+OTU_dist_by_temp.model.old = lme(mean_dist ~ CoreTemp_C, random = ~1|SiteID, data=OTU_Disturbed_Dist.df)
+OTU_dist_by_temp.model = lmer(mean_dist ~ CoreTemp_C + (1|SiteID) + (1|Year), data=OTU_Disturbed_Dist.df)
+
+## Get regression for plot
+OTU_dist_by_temp.model.reg.df = data.frame(summary(OTU_dist_by_temp.model)$coefficients) %>%
+  tibble::rownames_to_column(var="factor") %>%
+  mutate(p_slope = ifelse(factor == "CoreTemp_C", Pr...t.., 1),
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+  mutate(p_slope = min(p_slope)) %>%
+  ungroup %>%
+  select(factor, Estimate, p_slope) %>%
+  tidyr::spread(key=factor, value = Estimate) %>%
+  mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
+summary(OTU_dist_by_temp.model)
 ```
 
-    ##                   Value   Std.Error DF   t-value      p-value
-    ## (Intercept)  0.52021460 0.035399043 41 14.695725 6.143608e-18
-    ## CoreTemp_C  -0.01099161 0.001254062 41 -8.764803 6.060038e-11
+    ## Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+    ## lmerModLmerTest]
+    ## Formula: mean_dist ~ CoreTemp_C + (1 | SiteID) + (1 | Year)
+    ##    Data: OTU_Disturbed_Dist.df
+    ## 
+    ## REML criterion at convergence: -131
+    ## 
+    ## Scaled residuals: 
+    ##      Min       1Q   Median       3Q      Max 
+    ## -2.10895 -0.56081 -0.02846  0.65199  1.69145 
+    ## 
+    ## Random effects:
+    ##  Groups   Name        Variance  Std.Dev.
+    ##  SiteID   (Intercept) 0.0006260 0.02502 
+    ##  Year     (Intercept) 0.0009126 0.03021 
+    ##  Residual             0.0020691 0.04549 
+    ## Number of obs: 49, groups:  SiteID, 7; Year, 7
+    ## 
+    ## Fixed effects:
+    ##              Estimate Std. Error        df t value Pr(>|t|)    
+    ## (Intercept)  0.446384   0.042082 21.391836  10.607 5.57e-10 ***
+    ## CoreTemp_C  -0.008257   0.001439 29.553465  -5.738 3.07e-06 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Correlation of Fixed Effects:
+    ##            (Intr)
+    ## CoreTemp_C -0.923
 
 ``` r
 OTU_dist_by_temp.plot = ggplot(data=OTU_Disturbed_Dist.df, aes(x=CoreTemp_C, y=mean_dist)) +
@@ -1333,9 +1416,10 @@ OTU_dist_by_temp.plot = ggplot(data=OTU_Disturbed_Dist.df, aes(x=CoreTemp_C, y=m
   geom_errorbar(aes(ymin=mean_dist-SE_dist, ymax=mean_dist+SE_dist), color="black", size=1, width=0) +
   geom_errorbar(aes(ymin=mean_dist-SE_dist, ymax=mean_dist+SE_dist, color=SiteID), size=0.5, width=0) +
   geom_point(aes(fill=SiteID, shape=FireClassification, size=Year)) +
+  geom_abline(data=filter(OTU_dist_by_temp.model.reg.df, p_slope < 0.05), 
+              aes(intercept = Intercept, slope = CoreTemp_C), 
+              linetype = 2, size=1, color="black") +
   scale_size_continuous(range=c(1,4)) +
-  geom_abline(slope=OTU_dist_by_temp.model.sum[2], intercept = OTU_dist_by_temp.model.sum[1], size=1, color="black", linetype=2) +
-  #scale_linetype_manual(values=c("< 0.05" = 1, "≥ 0.05" = 2)) +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
   scale_color_manual(values=site.col) +
@@ -1369,7 +1453,7 @@ Fig1.plot
 ![](A2_Overall_annotations_files/figure-gfm/unnamed-chunk-27-1.png)<!-- -->
 
 ``` r
-ggsave(Fig1.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/Fig1.tiff",
+ggsave(Fig1.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Fig1.tiff",
        device="tiff", width=7, height=7, units="in", bg = "white")
 ```
 
@@ -1381,7 +1465,7 @@ sessionInfo()
 
     ## R version 4.4.1 (2024-06-14)
     ## Platform: aarch64-apple-darwin20
-    ## Running under: macOS Ventura 13.0.1
+    ## Running under: macOS 26.3.1
     ## 
     ## Matrix products: default
     ## BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
@@ -1397,39 +1481,41 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ##  [1] ggplot2_3.5.2   betapart_1.6    ecotraj_1.1.0   Rcpp_1.0.13    
-    ##  [5] Nonpareil_3.5.3 picante_1.8.2   nlme_3.1-166    vegan_2.6-8    
-    ##  [9] lattice_0.22-6  permute_0.9-7   readxl_1.4.3    ape_5.8        
-    ## [13] phyloseq_1.48.0 dplyr_1.1.4    
+    ##  [1] ggplot2_4.0.1   lmerTest_3.2-0  lme4_1.1-37     Matrix_1.7-0   
+    ##  [5] betapart_1.6    ecotraj_1.1.0   Rcpp_1.1.0      Nonpareil_3.5.3
+    ##  [9] picante_1.8.2   nlme_3.1-166    vegan_2.7-1     permute_0.9-7  
+    ## [13] readxl_1.4.3    ape_5.8         phyloseq_1.48.0 dplyr_1.1.4    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] ade4_1.7-22             tidyselect_1.2.1        farver_2.1.2           
-    ##  [4] Biostrings_2.72.1       fastmap_1.2.0           Kendall_2.2.1          
-    ##  [7] digest_0.6.37           lifecycle_1.0.4         cluster_2.1.6          
-    ## [10] survival_3.7-0          magrittr_2.0.3          compiler_4.4.1         
-    ## [13] rlang_1.1.4             tools_4.4.1             doSNOW_1.0.20          
-    ## [16] igraph_2.0.3            utf8_1.2.4              yaml_2.3.10            
-    ## [19] geometry_0.5.0          data.table_1.16.0       knitr_1.48             
-    ## [22] labeling_0.4.3          plyr_1.8.9              abind_1.4-5            
-    ## [25] purrr_1.0.2             withr_3.0.1             itertools_0.1-3        
-    ## [28] BiocGenerics_0.50.0     grid_4.4.1              stats4_4.4.1           
-    ## [31] fansi_1.0.6             multtest_2.60.0         biomformat_1.32.0      
-    ## [34] colorspace_2.1-1        Rhdf5lib_1.26.0         scales_1.3.0           
-    ## [37] iterators_1.0.14        MASS_7.3-61             cli_3.6.3              
-    ## [40] rmarkdown_2.29          crayon_1.5.3            ragg_1.3.2             
-    ## [43] generics_0.1.3          rcdd_1.6                rstudioapi_0.16.0      
-    ## [46] httr_1.4.7              reshape2_1.4.4          magic_1.6-1            
-    ## [49] rhdf5_2.48.0            stringr_1.5.1           zlibbioc_1.50.0        
-    ## [52] splines_4.4.1           parallel_4.4.1          cellranger_1.1.0       
-    ## [55] XVector_0.44.0          vctrs_0.6.5             boot_1.3-31            
-    ## [58] Matrix_1.7-0            minpack.lm_1.2-4        jsonlite_1.8.8         
-    ## [61] IRanges_2.38.1          S4Vectors_0.42.1        systemfonts_1.1.0      
-    ## [64] foreach_1.5.2           tidyr_1.3.1             snow_0.4-4             
-    ## [67] glue_1.7.0              codetools_0.2-20        cowplot_1.1.3          
-    ## [70] stringi_1.8.4           gtable_0.3.5            GenomeInfoDb_1.40.1    
-    ## [73] UCSC.utils_1.0.0        munsell_0.5.1           tibble_3.2.1           
-    ## [76] pillar_1.9.0            htmltools_0.5.8.1       rhdf5filters_1.16.0    
-    ## [79] GenomeInfoDbData_1.2.12 R6_2.5.1                textshaping_0.4.0      
-    ## [82] evaluate_0.24.0         Biobase_2.64.0          highr_0.11             
-    ## [85] fastmatch_1.1-4         mgcv_1.9-1              xfun_0.52              
-    ## [88] pkgconfig_2.0.3
+    ##  [1] Rdpack_2.6.4            rlang_1.1.4             magrittr_2.0.3         
+    ##  [4] ade4_1.7-22             compiler_4.4.1          mgcv_1.9-1             
+    ##  [7] systemfonts_1.3.1       vctrs_0.6.5             reshape2_1.4.4         
+    ## [10] stringr_1.5.1           pkgconfig_2.0.3         crayon_1.5.3           
+    ## [13] fastmap_1.2.0           XVector_0.44.0          magic_1.6-1            
+    ## [16] labeling_0.4.3          utf8_1.2.4              rmarkdown_2.29         
+    ## [19] UCSC.utils_1.0.0        nloptr_2.2.1            itertools_0.1-3        
+    ## [22] ragg_1.3.2              purrr_1.0.2             xfun_0.52              
+    ## [25] zlibbioc_1.50.0         GenomeInfoDb_1.40.1     jsonlite_1.8.8         
+    ## [28] biomformat_1.32.0       highr_0.11              rhdf5filters_1.16.0    
+    ## [31] Rhdf5lib_1.26.0         parallel_4.4.1          cluster_2.1.6          
+    ## [34] R6_2.5.1                stringi_1.8.4           RColorBrewer_1.1-3     
+    ## [37] boot_1.3-31             cellranger_1.1.0        rcdd_1.6               
+    ## [40] numDeriv_2016.8-1.1     iterators_1.0.14        knitr_1.48             
+    ## [43] snow_0.4-4              IRanges_2.38.1          splines_4.4.1          
+    ## [46] igraph_2.0.3            tidyselect_1.2.1        rstudioapi_0.16.0      
+    ## [49] abind_1.4-5             yaml_2.3.10             codetools_0.2-20       
+    ## [52] minpack.lm_1.2-4        lattice_0.22-6          tibble_3.2.1           
+    ## [55] plyr_1.8.9              Biobase_2.64.0          withr_3.0.1            
+    ## [58] S7_0.2.1                evaluate_0.24.0         survival_3.7-0         
+    ## [61] Biostrings_2.72.1       pillar_1.9.0            foreach_1.5.2          
+    ## [64] stats4_4.4.1            geometry_0.5.0          reformulas_0.4.0       
+    ## [67] generics_0.1.3          S4Vectors_0.42.1        scales_1.4.0           
+    ## [70] minqa_1.2.8             glue_1.7.0              tools_4.4.1            
+    ## [73] data.table_1.16.0       cowplot_1.1.3           fastmatch_1.1-4        
+    ## [76] rhdf5_2.48.0            grid_4.4.1              tidyr_1.3.1            
+    ## [79] rbibutils_2.3           colorspace_2.1-1        GenomeInfoDbData_1.2.12
+    ## [82] cli_3.6.3               textshaping_0.4.0       fansi_1.0.6            
+    ## [85] Kendall_2.2.1           doSNOW_1.0.20           gtable_0.3.6           
+    ## [88] digest_0.6.37           BiocGenerics_0.50.0     farver_2.1.2           
+    ## [91] htmltools_0.5.8.1       multtest_2.60.0         lifecycle_1.0.4        
+    ## [94] httr_1.4.7              MASS_7.3-61

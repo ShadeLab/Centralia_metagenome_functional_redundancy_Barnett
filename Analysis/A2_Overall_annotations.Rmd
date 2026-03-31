@@ -28,6 +28,8 @@ library(picante)
 library(Nonpareil)
 library(ecotraj)
 library(betapart)
+library(lme4)
+library(lmerTest)
 
 # Libraries for plotting
 library(ggplot2)
@@ -207,6 +209,9 @@ OTU_BC.plot = ggplot(data=OTU_BC.ord.df, aes(x=Axis.1, y=Axis.2)) +
          size = guide_legend(order = 3, override.aes=list(shape=22), ncol=2))
 
 OTU_BC.plot
+
+ggsave(OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS3.tiff",
+       device="tiff", width=3.5, height=5, units="in", bg = "white")
                    
 ```
 
@@ -379,7 +384,7 @@ cap.plot = cap_plot +
          size = guide_legend(order = 3, override.aes=list(shape=22), nrow=4))
 cap.plot
 
-ggsave(cap.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS4.tiff",
+ggsave(cap.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS4.tiff",
        device="tiff", width=5, height=5, units="in", bg = "white")
 
 ```
@@ -400,8 +405,8 @@ MetaG_OTU_BC.plot = cowplot::plot_grid(cowplot::plot_grid(OTU_BC.plot + ggtitle(
                                        ncol=1, rel_heights = c(1,0.3))
 MetaG_OTU_BC.plot
 
-ggsave(MetaG_OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS3.tiff",
-       device="tiff", width=7, height=5, units="in", bg = "white")
+#ggsave(MetaG_OTU_BC.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS3.tiff",
+#       device="tiff", width=7, height=5, units="in", bg = "white")
 
 ```
 
@@ -438,7 +443,7 @@ KEGG_OTU.procrustes
 plot(KEGG_OTU.procrustes, kind=1)
 
 # Save figure
-tiff(filename = "/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS2.tiff", 
+tiff(filename = "/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS2.tiff", 
      width = 5, height = 5, units = "in", res=300)
 plot(KEGG_OTU.procrustes, kind=1)
 dev.off()
@@ -743,8 +748,8 @@ full_timelag.plot = cowplot::plot_grid(timelag.plot + theme(legend.position = "n
                                        nrow=1, rel_widths = c(1, 0.5), labels=c("A", "B"), label_size = 8)
 full_timelag.plot
 
-#ggsave(full_timelag.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/FigS5.tiff",
-#       device="tiff", width=7, height=5, units="in", bg = "white")
+ggsave(full_timelag.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Supplemental/FigS5.tiff",
+       device="tiff", width=7, height=5, units="in", bg = "white")
 ```
 
 ## Trajectory analysis
@@ -892,16 +897,31 @@ Reference_Dist.df = data.frame(test.dist.mat) %>%
 Now lets plot the similarity over temperature
 
 ```{r, message=FALSE, warning=FALSE, fig.height=3.5, fig.width=3.5}
-# Weighted UniFrac
-dist_by_temp.model = lme(mean_dist ~ CoreTemp_C, random = ~1|SiteID, data=Disturbed_Dist.df)
-dist_by_temp.model.sum = summary(dist_by_temp.model)$tTable
-dist_by_temp.model.sum
+# Linear mixed effects model
+dist_by_temp.model.old = lme(mean_dist ~ CoreTemp_C, random = ~1|SiteID, data=Disturbed_Dist.df)
+dist_by_temp.model = lmer(mean_dist ~ CoreTemp_C + (1|SiteID) + (1|Year), data=Disturbed_Dist.df)
+
+## Get regression for plot
+dist_by_temp.model.reg.df = data.frame(summary(dist_by_temp.model)$coefficients) %>%
+  tibble::rownames_to_column(var="factor") %>%
+  mutate(p_slope = ifelse(factor == "CoreTemp_C", Pr...t.., 1),
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+  mutate(p_slope = min(p_slope)) %>%
+  ungroup %>%
+  select(factor, Estimate, p_slope) %>%
+  tidyr::spread(key=factor, value = Estimate) %>%
+  mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
+summary(dist_by_temp.model)
+
 
 dist_by_temp.plot = ggplot(data=Disturbed_Dist.df, aes(x=CoreTemp_C, y=mean_dist)) +
   geom_hline(yintercept = Reference_Dist.df$dist, color="grey", linetype=2) +
   geom_errorbar(aes(ymin=mean_dist-SE_dist, ymax=mean_dist+SE_dist), color="black", size=1, width=0) +
   geom_errorbar(aes(ymin=mean_dist-SE_dist, ymax=mean_dist+SE_dist, color=SiteID), size=0.5, width=0) +
   geom_point(aes(fill=SiteID, shape=FireClassification, size=Year)) +
+  geom_abline(data=filter(dist_by_temp.model.reg.df, p_slope < 0.05), 
+              aes(intercept = Intercept, slope = CoreTemp_C), 
+              linetype = 2, size=1, color="black") +
   scale_size_continuous(range=c(1,4)) +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
@@ -913,7 +933,6 @@ dist_by_temp.plot = ggplot(data=Disturbed_Dist.df, aes(x=CoreTemp_C, y=mean_dist
 
 
 dist_by_temp.plot
-
 
 ```
 
@@ -963,18 +982,32 @@ OTU_Reference_Dist.df = data.frame(test.dist.mat) %>%
 Now lets plot the similarities over temperature
 
 ```{r, message=FALSE, warning=FALSE, fig.height=3.5, fig.width=3.5}
-OTU_dist_by_temp.model = lme(mean_dist ~ CoreTemp_C, random = ~1|SiteID, data=OTU_Disturbed_Dist.df)
-OTU_dist_by_temp.model.sum = summary(OTU_dist_by_temp.model)$tTable
-OTU_dist_by_temp.model.sum
+# Linear mixed effects model
+OTU_dist_by_temp.model.old = lme(mean_dist ~ CoreTemp_C, random = ~1|SiteID, data=OTU_Disturbed_Dist.df)
+OTU_dist_by_temp.model = lmer(mean_dist ~ CoreTemp_C + (1|SiteID) + (1|Year), data=OTU_Disturbed_Dist.df)
+
+## Get regression for plot
+OTU_dist_by_temp.model.reg.df = data.frame(summary(OTU_dist_by_temp.model)$coefficients) %>%
+  tibble::rownames_to_column(var="factor") %>%
+  mutate(p_slope = ifelse(factor == "CoreTemp_C", Pr...t.., 1),
+         factor = ifelse(factor == "(Intercept)", "Intercept", factor)) %>%
+  mutate(p_slope = min(p_slope)) %>%
+  ungroup %>%
+  select(factor, Estimate, p_slope) %>%
+  tidyr::spread(key=factor, value = Estimate) %>%
+  mutate(sig = ifelse(p_slope < 0.05, "< 0.05", "≥ 0.05"))
+summary(OTU_dist_by_temp.model)
+
 
 OTU_dist_by_temp.plot = ggplot(data=OTU_Disturbed_Dist.df, aes(x=CoreTemp_C, y=mean_dist)) +
   geom_hline(yintercept = OTU_Reference_Dist.df$dist, color="grey", linetype=2) +
   geom_errorbar(aes(ymin=mean_dist-SE_dist, ymax=mean_dist+SE_dist), color="black", size=1, width=0) +
   geom_errorbar(aes(ymin=mean_dist-SE_dist, ymax=mean_dist+SE_dist, color=SiteID), size=0.5, width=0) +
   geom_point(aes(fill=SiteID, shape=FireClassification, size=Year)) +
+  geom_abline(data=filter(OTU_dist_by_temp.model.reg.df, p_slope < 0.05), 
+              aes(intercept = Intercept, slope = CoreTemp_C), 
+              linetype = 2, size=1, color="black") +
   scale_size_continuous(range=c(1,4)) +
-  geom_abline(slope=OTU_dist_by_temp.model.sum[2], intercept = OTU_dist_by_temp.model.sum[1], size=1, color="black", linetype=2) +
-  #scale_linetype_manual(values=c("< 0.05" = 1, "≥ 0.05" = 2)) +
   scale_shape_manual(values=FC.shape) +
   scale_fill_manual(values=site.col) +
   scale_color_manual(values=site.col) +
@@ -1002,7 +1035,7 @@ Fig1.plot = cowplot::plot_grid(BC.plot + theme(legend.position="none"),
 
 Fig1.plot
 
-ggsave(Fig1.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Figures/Supplemental/Fig1.tiff",
+ggsave(Fig1.plot, file="/Users/sambarnett/Documents/Shade_lab/Centralia_project/Metagenomics/Manuscript/Revision_1/Figures/Fig1.tiff",
        device="tiff", width=7, height=7, units="in", bg = "white")
 ```
 
