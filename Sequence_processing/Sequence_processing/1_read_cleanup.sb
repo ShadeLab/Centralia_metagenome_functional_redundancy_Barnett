@@ -1,0 +1,114 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=read_cleanup
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=50
+#SBATCH --mem=50G
+#SBATCH --output=S1_read_cleanup.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate metagenome_proc
+
+echo "Begining processing"
+date
+
+for pfx in $(cat sample_list.txt)
+do
+	echo " "
+        echo " "
+	echo "Running sample:"
+	echo ${pfx}
+	echo " "
+	echo " "
+	mkdir /mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}
+	
+	echo "Performing cleanup for library 1"
+	echo " "
+	bbduk.sh \
+		in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/rawseq/20220708_DNASeq_PE150/${pfx}_L001_R1_001.fastq.gz \
+		in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/rawseq/20220708_DNASeq_PE150/${pfx}_L001_R2_001.fastq.gz \
+		out=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L001_R1.clean.fastq.gz \
+		out2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L001_R2.clean.fastq.gz \
+		ref=bbmap_refs/adapters.fa,bbmap_refs/phix174_ill.ref.fa \
+		ktrim=r k=23 mink=11 trimq=0 qtrim=r maxns=3 minavgquality=3 \
+		minlength=52 mlf=0.33 \
+		interleaved=f threads=50
+	echo " "
+	echo " "
+	echo "Performing cleanup for library 2"
+	echo " "
+	bbduk.sh \
+                in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/rawseq/20220708_DNASeq_PE150/${pfx}_L002_R1_001.fastq.gz \
+                in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/rawseq/20220708_DNASeq_PE150/${pfx}_L002_R2_001.fastq.gz \
+                out=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L002_R1.clean.fastq.gz \
+                out2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L002_R2.clean.fastq.gz \
+               	ref=bbmap_refs/adapters.fa,bbmap_refs/phix174_ill.ref.fa \
+                ktrim=r k=23 mink=11 trimq=0 qtrim=r maxns=3 minavgquality=3 \
+               	minlength=52 mlf=0.33 \
+               	interleaved=f threads=50
+	echo " "
+	echo " "
+	echo "Done!"
+
+	echo "Performing error correction on library 1 reads"
+	echo " "
+	bbcms.sh \
+		in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L001_R1.clean.fastq.gz \
+		in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L001_R2.clean.fastq.gz \
+		out=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L001_R1.clean.EC.fastq \
+		out2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L001_R2.clean.EC.fastq \
+		mincount=2 \
+		hcf=0.6 \
+		tossjunk=t \
+		ecc=t \
+		bits=4
+	echo " "
+	echo " "
+
+	echo "Performing error correction on library 2 reads"
+	echo " "
+	bbcms.sh \
+                in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L002_R1.clean.fastq.gz \
+                in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L002_R2.clean.fastq.gz \
+                out=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L002_R1.clean.EC.fastq \
+                out2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L002_R2.clean.EC.fastq \
+               	mincount=2 \
+                hcf=0.6 \
+               	tossjunk=t \
+               	ecc=t \
+               	bits=4
+	echo " "
+	echo " "
+
+	echo "Concatinating and compressing final reads"
+	echo " "
+	cat /mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L001_R1.clean.EC.fastq \
+		/mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L002_R1.clean.EC.fastq \
+		> /mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R1.clean.EC.fastq
+	pigz -p 50 /mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R1.clean.EC.fastq
+
+	cat /mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L001_R2.clean.EC.fastq \
+                /mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}/${pfx}_L002_R2.clean.EC.fastq \
+                > /mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R2.clean.EC.fastq
+        pigz -p 50 /mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R2.clean.EC.fastq
+	echo " "
+        echo " "
+
+	echo "Cleanup"
+	rm -r /mnt/research/ShadeLab/Barnett/Centralia_metagenome/intermediate_seq/${pfx}
+	echo " "
+        echo " "
+	echo "Done!"
+done
+echo " "
+echo " "
+echo "Done with all sites!"
+date
+conda deactivate

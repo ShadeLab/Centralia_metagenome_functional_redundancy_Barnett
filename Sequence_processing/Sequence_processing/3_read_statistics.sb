@@ -1,0 +1,43 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=read_stats
+#SBATCH --time=35:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=30G
+#SBATCH --output=S3_read_statistics.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate genome_annotation
+
+echo "Getting read statistics"
+date
+
+for pfx in $(cat sample_list.txt)
+do
+	echo " "
+	echo " "
+	echo ${pfx}
+	date
+	echo " "
+	echo " "
+	echo "Getting read stats"
+	echo " "
+	python read_statistics.py \
+		/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/ \
+		/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/read_statistics/Filtered_read_statistics.txt \
+		${pfx}
+	echo "Done!"
+	date
+done
+echo " "
+echo " "
+echo "Done with all sites!"
+date
+conda deactivate

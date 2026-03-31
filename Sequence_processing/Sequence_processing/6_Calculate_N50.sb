@@ -1,0 +1,33 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=N50
+#SBATCH --time=2:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=30G
+#SBATCH --output=S6_calculate_N50.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+echo "Calculating N50s"
+date
+
+for pfx in $(cat sample_list.txt)
+do
+	echo " "
+	echo ${pfx}
+	date
+	echo " "
+	perl FastA.N50.pl /mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_contigs/${pfx}.filt_scaffolds.fasta
+	echo " "
+	echo "Done!"
+	date
+done
+echo " "
+echo " "
+echo "Done with all sites!"
+date

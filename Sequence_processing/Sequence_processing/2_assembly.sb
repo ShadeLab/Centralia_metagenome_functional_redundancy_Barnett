@@ -1,0 +1,48 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=assembly
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=50
+#SBATCH --mem=250G
+#SBATCH --output=S2_assembly.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate metagenome_proc
+
+echo "Begining assembling"
+date
+
+for pfx in $(cat sample_list.txt)
+do
+	echo " "
+	echo " "
+	echo ${pfx}
+	echo " "
+	echo " "
+	mkdir /mnt/research/ShadeLab/Barnett/Centralia_metagenome/contigs/${pfx}
+
+	echo "Performing assembly"
+	echo " "
+	~/repo/SPAdes-3.15.5-Linux/bin/metaspades.py \
+		-1 /mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R1.clean.EC.fastq.gz \
+		-2 /mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R2.clean.EC.fastq.gz \
+		-o /mnt/research/ShadeLab/Barnett/Centralia_metagenome/contigs/${pfx} \
+		--only-assembler \
+		--threads 50 \
+		-k 33,55,77,99,127
+	echo " "
+	echo " "
+	echo "Done!"
+done
+echo " "
+echo " "
+echo "Done with all sites!"
+date
+conda deactivate

@@ -1,0 +1,61 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=kraken
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=100
+#SBATCH --mem=100G
+#SBATCH --output=S7_kraken.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate kraken2
+
+echo "Running kraken2 and bracken pipeline"
+date
+echo " "
+echo " "
+
+for pfx in $(cat sample_list.txt)
+do
+	echo ${pfx}
+	date
+	echo " "
+	echo "Starting kracken2"
+	kraken2 \
+		--db ~/databases/kracken2_std \
+		--threads 100 \
+		--report /mnt/research/ShadeLab/Barnett/Centralia_metagenome/taxonomy/kraken2/${pfx}.kreport \
+		--gzip-compressed \
+		--paired \
+		/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R1.clean.EC.fastq.gz \
+		/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R1.clean.EC.fastq.gz \
+		> /mnt/research/ShadeLab/Barnett/Centralia_metagenome/taxonomy/kraken2/${pfx}.kraken
+	echo " "
+	
+	echo "Starting bracken"
+	bracken \
+		-d ~/databases/kracken2_std \
+		-i /mnt/research/ShadeLab/Barnett/Centralia_metagenome/taxonomy/kraken2/${pfx}.kreport \
+		-o /mnt/research/ShadeLab/Barnett/Centralia_metagenome/taxonomy/kraken2/${pfx}.bracken \
+		-r 150 \
+		-l C \
+		-t 100
+	echo " "
+	
+	echo "Cleaning output directory"
+	rm /mnt/research/ShadeLab/Barnett/Centralia_metagenome/taxonomy/kraken2/${pfx}.kraken
+	echo "Done!"
+	date
+done
+
+echo " "
+echo " "
+echo "Done with all sites!"
+date
+conda deactivate

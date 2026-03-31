@@ -1,0 +1,40 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=microbecensus
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=50
+#SBATCH --mem=30G
+#SBATCH --output=S5_microbecensus.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate microbecensus
+
+echo "Running microbecensus"
+date
+
+for pfx in $(cat sample_list.txt)
+do
+	echo " "
+	echo ${pfx}
+	date
+	echo " "
+	run_microbe_census.py \
+		-v \
+		-t 50 \
+		/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R1.clean.EC.fastq.gz,/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R1.clean.EC.fastq.gz \
+		/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/microbecensus/${pfx}_census.txt
+	echo "Done!"
+	date
+done
+echo " "
+echo " "
+echo "Done with all sites!"
+date
+conda deactivate
