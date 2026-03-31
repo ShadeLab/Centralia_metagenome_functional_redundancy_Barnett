@@ -1,0 +1,1129 @@
+
+Lmod is automatically replacing "Python/3.6.4" with "Conda/3".
+
+Cen22_03102018_R1_S59
+Tue Mar  7 09:53:17 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_03102018_R1_S59/Cen22_03102018_R1_S59.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_03102018_R1_S59_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_03102018_R1_S59_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen22_03102018_R1_S59.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_03102018_R1_S59/Cen22_03102018_R1_S59.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_03102018_R1_S59_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_03102018_R1_S59_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen22_03102018_R1_S59.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_03102018_R1_S59/Cen22_03102018_R1_S59.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.344 seconds.
+Loading index for chunk 1-2, build 1
+Indexing threads started for block 0-2
+Indexing threads finished for block 0-2
+Generated Index:	51.408 seconds.
+Analyzed Index:   	5.098 seconds.
+Cleared Memory:    	1.247 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	127906794	(19150409193 bases)
+
+Mapping:          	1100.839 seconds.
+Reads/sec:       	116190.30
+kBases/sec:      	17396.20
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	 46.9512% 	 30026856 	 46.9896% 	  8998698160
+bad pairs:       	  4.5621% 	  2917613 	  4.5704% 	   875252744
+insert size avg: 	  357.33
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 57.4646% 	 36750582 	 57.4647% 	  5507852063
+unambiguous:     	 57.1270% 	 36534653 	 57.1278% 	  5475558344
+ambiguous:       	  0.3376% 	   215929 	  0.3369% 	    32293719
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 42.3468% 	 27082228 	 42.3495% 	  4059099671
+semiperfect site:	 49.5738% 	 31704118 	 49.5783% 	  4751958643
+rescued:         	  0.9674% 	   618684
+
+Match Rate:      	      NA 	       NA 	 92.8592% 	  5264582430
+Error Rate:      	 13.2753% 	  4878766 	  3.8025% 	   215582570
+Sub Rate:        	 11.9847% 	  4404429 	  0.9427% 	    53443208
+Del Rate:        	  1.6117% 	   592320 	  2.8499% 	   161573398
+Ins Rate:        	  0.3239% 	   119020 	  0.0100% 	      565964
+N Rate:          	 14.9838% 	  5506645 	  3.3383% 	   189260461
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 57.4838% 	 36762843 	 57.4832% 	  5498642426
+unambiguous:     	 57.1448% 	 36546045 	 57.1450% 	  5466295425
+ambiguous:       	  0.3390% 	   216798 	  0.3382% 	    32347001
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 42.2866% 	 27043728 	 42.2886% 	  4045175573
+semiperfect site:	 49.4645% 	 31634231 	 49.4684% 	  4731977830
+rescued:         	  1.0560% 	   675343
+
+Match Rate:      	      NA 	       NA 	 92.8339% 	  5256137611
+Error Rate:      	 13.4789% 	  4955244 	  3.8364% 	   217211761
+Sub Rate:        	 12.1852% 	  4479634 	  0.9431% 	    53399100
+Del Rate:        	  1.6234% 	   596792 	  2.8830% 	   163229098
+Ins Rate:        	  0.3293% 	   121063 	  0.0103% 	      583563
+N Rate:          	 14.9324% 	  5489565 	  3.3297% 	   188522152
+
+Reads:                               	127906794
+Mapped reads:                        	72599185
+Mapped bases:                        	10869578607
+Ref scaffolds:                       	585830
+Ref bases:                           	447944519
+
+Percent mapped:                      	56.759
+Percent proper pairs:                	46.269
+Average coverage:                    	24.265
+Standard deviation:                    	46.544
+Percent scaffolds with any coverage: 	99.58
+Percent of reference bases covered:  	99.51
+
+Total time:     	1177.809 seconds.
+ 
+Done mapping
+Tue Mar  7 10:12:56 EST 2023
+Cen22_06102019_R1_S60
+Tue Mar  7 10:12:56 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_06102019_R1_S60/Cen22_06102019_R1_S60.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_06102019_R1_S60_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_06102019_R1_S60_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen22_06102019_R1_S60.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_06102019_R1_S60/Cen22_06102019_R1_S60.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_06102019_R1_S60_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_06102019_R1_S60_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen22_06102019_R1_S60.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_06102019_R1_S60/Cen22_06102019_R1_S60.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.275 seconds.
+Loading index for chunk 1-1, build 1
+Indexing threads started for block 0-1
+Indexing threads finished for block 0-1
+Generated Index:	41.065 seconds.
+Analyzed Index:   	5.107 seconds.
+Cleared Memory:    	1.039 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	127426364	(19039478773 bases)
+
+Mapping:          	924.115 seconds.
+Reads/sec:       	137890.13
+kBases/sec:      	20602.93
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	 56.8463% 	 36218582 	 56.8916% 	 10831859460
+bad pairs:       	  4.1465% 	  2641856 	  4.1624% 	   792495362
+insert size avg: 	  331.83
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 66.9361% 	 42647116 	 66.9337% 	  6380073129
+unambiguous:     	 66.6923% 	 42491773 	 66.6917% 	  6357012016
+ambiguous:       	  0.2438% 	   155343 	  0.2419% 	    23061113
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 50.2000% 	 31983996 	 50.1988% 	  4784912526
+semiperfect site:	 58.3099% 	 37151067 	 58.3150% 	  5558548513
+rescued:         	  0.8033% 	   511797
+
+Match Rate:      	      NA 	       NA 	 93.5033% 	  6124274040
+Error Rate:      	 12.4372% 	  5304099 	  3.2205% 	   210936509
+Sub Rate:        	 11.2708% 	  4806682 	  0.6209% 	    40665472
+Del Rate:        	  1.4444% 	   615983 	  2.5913% 	   169724878
+Ins Rate:        	  0.2588% 	   110390 	  0.0083% 	      546159
+N Rate:          	 14.4851% 	  6177490 	  3.2762% 	   214587458
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 66.9491% 	 42655384 	 66.9450% 	  6364825220
+unambiguous:     	 66.7009% 	 42497288 	 66.6990% 	  6341433848
+ambiguous:       	  0.2481% 	   158096 	  0.2460% 	    23391372
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 50.2232% 	 31998811 	 50.2214% 	  4774822738
+semiperfect site:	 58.2951% 	 37141688 	 58.3001% 	  5542905728
+rescued:         	  0.8658% 	   551617
+
+Match Rate:      	      NA 	       NA 	 93.4446% 	  6109628465
+Error Rate:      	 12.4504% 	  5310765 	  3.2821% 	   214590844
+Sub Rate:        	 11.2793% 	  4811208 	  0.6204% 	    40561223
+Del Rate:        	  1.4581% 	   621973 	  2.6522% 	   173407564
+Ins Rate:        	  0.2719% 	   115970 	  0.0095% 	      622057
+N Rate:          	 14.4662% 	  6170608 	  3.2733% 	   214013475
+
+Reads:                               	127426364
+Mapped reads:                        	84339893
+Mapped bases:                        	12600831118
+Ref scaffolds:                       	474929
+Ref bases:                           	378567177
+
+Percent mapped:                      	66.187
+Percent proper pairs:                	56.120
+Average coverage:                    	33.286
+Standard deviation:                    	57.700
+Percent scaffolds with any coverage: 	99.60
+Percent of reference bases covered:  	99.68
+
+Total time:     	994.903 seconds.
+ 
+Done mapping
+Tue Mar  7 10:29:31 EST 2023
+Cen22_13102020_R1_S61
+Tue Mar  7 10:29:31 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_13102020_R1_S61/Cen22_13102020_R1_S61.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_13102020_R1_S61_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_13102020_R1_S61_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen22_13102020_R1_S61.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_13102020_R1_S61/Cen22_13102020_R1_S61.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_13102020_R1_S61_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_13102020_R1_S61_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen22_13102020_R1_S61.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_13102020_R1_S61/Cen22_13102020_R1_S61.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.306 seconds.
+Loading index for chunk 1-2, build 1
+Indexing threads started for block 0-2
+Indexing threads finished for block 0-2
+Generated Index:	43.318 seconds.
+Analyzed Index:   	5.287 seconds.
+Cleared Memory:    	1.084 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	112687806	(16874603605 bases)
+
+Mapping:          	865.651 seconds.
+Reads/sec:       	130177.00
+kBases/sec:      	19493.55
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	 48.0587% 	 27078140 	 48.0986% 	  8116450930
+bad pairs:       	  4.4516% 	  2508179 	  4.4589% 	   752425206
+insert size avg: 	  365.02
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 58.6263% 	 33032332 	 58.6273% 	  4951304604
+unambiguous:     	 58.2767% 	 32835349 	 58.2784% 	  4921838348
+ambiguous:       	  0.3496% 	   196983 	  0.3489% 	    29466256
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 43.9410% 	 24758099 	 43.9458% 	  3711389431
+semiperfect site:	 51.2611% 	 28882479 	 51.2676% 	  4329744962
+rescued:         	  0.9111% 	   513356
+
+Match Rate:      	      NA 	       NA 	 93.2040% 	  4740219816
+Error Rate:      	 12.0832% 	  3991368 	  3.4890% 	   177447674
+Sub Rate:        	 10.8950% 	  3598858 	  0.8345% 	    42443013
+Del Rate:        	  1.4668% 	   484503 	  2.6456% 	   134549100
+Ins Rate:        	  0.2800% 	    92482 	  0.0090% 	      455561
+N Rate:          	 14.6986% 	  4855294 	  3.3069% 	   168186214
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 58.6608% 	 33051777 	 58.6624% 	  4944782006
+unambiguous:     	 58.3102% 	 32854257 	 58.3127% 	  4915303015
+ambiguous:       	  0.3506% 	   197520 	  0.3497% 	    29478991
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 43.8320% 	 24696687 	 43.8371% 	  3695128920
+semiperfect site:	 51.1051% 	 28794621 	 51.1123% 	  4308368792
+rescued:         	  1.0042% 	   565821
+
+Match Rate:      	      NA 	       NA 	 93.1227% 	  4733935408
+Error Rate:      	 12.3854% 	  4093608 	  3.5759% 	   181780247
+Sub Rate:        	 11.1879% 	  3697796 	  0.8368% 	    42539453
+Del Rate:        	  1.4880% 	   491796 	  2.7297% 	   138763314
+Ins Rate:        	  0.2836% 	    93726 	  0.0094% 	      477480
+N Rate:          	 14.6698% 	  4848637 	  3.3014% 	   167829665
+
+Reads:                               	112687806
+Mapped reads:                        	65329030
+Mapped bases:                        	9783003682
+Ref scaffolds:                       	498687
+Ref bases:                           	388447958
+
+Percent mapped:                      	57.973
+Percent proper pairs:                	47.419
+Average coverage:                    	25.185
+Standard deviation:                    	45.386
+Percent scaffolds with any coverage: 	99.53
+Percent of reference bases covered:  	99.51
+
+Total time:     	932.675 seconds.
+ 
+Done mapping
+Tue Mar  7 10:45:04 EST 2023
+Cen22_07102021_R1_S62
+Tue Mar  7 10:45:04 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_07102021_R1_S62/Cen22_07102021_R1_S62.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_07102021_R1_S62_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_07102021_R1_S62_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen22_07102021_R1_S62.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_07102021_R1_S62/Cen22_07102021_R1_S62.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_07102021_R1_S62_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen22_07102021_R1_S62_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen22_07102021_R1_S62.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen22_07102021_R1_S62/Cen22_07102021_R1_S62.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.754 seconds.
+Loading index for chunk 1-1, build 1
+Indexing threads started for block 0-1
+Indexing threads finished for block 0-1
+Generated Index:	34.161 seconds.
+Analyzed Index:   	3.432 seconds.
+Cleared Memory:    	1.043 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	109576490	(16405288629 bases)
+
+Mapping:          	789.515 seconds.
+Reads/sec:       	138789.54
+kBases/sec:      	20778.93
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	 34.2583% 	 18769517 	 34.2919% 	  5625686294
+bad pairs:       	  3.1108% 	  1704354 	  3.1166% 	   511281468
+insert size avg: 	  340.32
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 42.2668% 	 23157239 	 42.2678% 	  3470953414
+unambiguous:     	 41.8613% 	 22935049 	 41.8628% 	  3437690194
+ambiguous:       	  0.4055% 	   222190 	  0.4051% 	    33263220
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 28.2180% 	 15460166 	 28.2203% 	  2317399904
+semiperfect site:	 33.3290% 	 18260359 	 33.3324% 	  2737193755
+rescued:         	  0.9924% 	   543735
+
+Match Rate:      	      NA 	       NA 	 92.1707% 	  3294234127
+Error Rate:      	 20.6724% 	  4787166 	  4.4491% 	   159013925
+Sub Rate:        	 19.4331% 	  4500178 	  1.5516% 	    55456588
+Del Rate:        	  1.7268% 	   399880 	  2.8848% 	   103104088
+Ins Rate:        	  0.4320% 	   100043 	  0.0127% 	      453249
+N Rate:          	 15.3052% 	  3544258 	  3.3802% 	   120809450
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 42.2753% 	 23161922 	 42.2771% 	  3463967109
+unambiguous:     	 41.8696% 	 22939642 	 41.8720% 	  3430775564
+ambiguous:       	  0.4057% 	   222280 	  0.4051% 	    33191545
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 28.1585% 	 15427555 	 28.1615% 	  2307405004
+semiperfect site:	 33.2242% 	 18202952 	 33.2285% 	  2722572524
+rescued:         	  1.0772% 	   590166
+
+Match Rate:      	      NA 	       NA 	 92.1283% 	  3287933095
+Error Rate:      	 20.9202% 	  4845527 	  4.5025% 	   160686859
+Sub Rate:        	 19.6863% 	  4559734 	  1.5494% 	    55294500
+Del Rate:        	  1.7234% 	   399169 	  2.9392% 	   104894291
+Ins Rate:        	  0.4360% 	   100975 	  0.0140% 	      498068
+N Rate:          	 15.2550% 	  3533354 	  3.3692% 	   120241446
+
+Reads:                               	109576490
+Mapped reads:                        	45738211
+Mapped bases:                        	6847909434
+Ref scaffolds:                       	432958
+Ref bases:                           	317908292
+
+Percent mapped:                      	41.741
+Percent proper pairs:                	33.748
+Average coverage:                    	21.541
+Standard deviation:                    	25.178
+Percent scaffolds with any coverage: 	99.61
+Percent of reference bases covered:  	99.61
+
+Total time:     	848.013 seconds.
+ 
+Done mapping
+Tue Mar  7 10:59:12 EST 2023
+Cen23_13102015_R1_S63
+Tue Mar  7 10:59:12 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_13102015_R1_S63/Cen23_13102015_R1_S63.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_13102015_R1_S63_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_13102015_R1_S63_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_13102015_R1_S63.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_13102015_R1_S63/Cen23_13102015_R1_S63.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_13102015_R1_S63_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_13102015_R1_S63_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_13102015_R1_S63.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_13102015_R1_S63/Cen23_13102015_R1_S63.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.146 seconds.
+Loading index for chunk 1-1, build 1
+Indexing threads started for block 0-1
+Indexing threads finished for block 0-1
+Generated Index:	11.708 seconds.
+Analyzed Index:   	3.730 seconds.
+Cleared Memory:    	0.519 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	97457822	(14587750021 bases)
+
+Mapping:          	426.317 seconds.
+Reads/sec:       	228604.20
+kBases/sec:      	34218.09
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	 10.4186% 	  5076875 	 10.4200% 	  1520038858
+bad pairs:       	  1.2226% 	   595742 	  1.2250% 	   178703528
+insert size avg: 	  335.24
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 14.6666% 	  7146879 	 14.6614% 	  1070469416
+unambiguous:     	 14.3514% 	  6993273 	 14.3465% 	  1047478491
+ambiguous:       	  0.3152% 	   153606 	  0.3149% 	    22990925
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  5.6738% 	  2764773 	  5.6710% 	   414054830
+semiperfect site:	  6.9325% 	  3378127 	  6.9298% 	   505967460
+rescued:         	  0.7813% 	   380708
+
+Match Rate:      	      NA 	       NA 	 89.3121% 	   980188399
+Error Rate:      	 52.4473% 	  3748346 	  7.5408% 	    82759839
+Sub Rate:        	 51.6857% 	  3693917 	  5.0346% 	    55253842
+Del Rate:        	  2.2785% 	   162841 	  2.4618% 	    27017690
+Ins Rate:        	  1.4222% 	   101644 	  0.0445% 	      488307
+N Rate:          	 15.3400% 	  1096333 	  3.1471% 	    34538868
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 14.6860% 	  7156339 	 14.6786% 	  1069548785
+unambiguous:     	 14.3727% 	  7003648 	 14.3656% 	  1046745061
+ambiguous:       	  0.3133% 	   152691 	  0.3130% 	    22803724
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  5.6420% 	  2749288 	  5.6380% 	   410808306
+semiperfect site:	  6.8872% 	  3356050 	  6.8832% 	   501540117
+rescued:         	  0.8275% 	   403221
+
+Match Rate:      	      NA 	       NA 	 89.2673% 	   979408745
+Error Rate:      	 52.8050% 	  3778907 	  7.5980% 	    83362296
+Sub Rate:        	 52.0486% 	  3724772 	  5.0364% 	    55257382
+Del Rate:        	  2.2843% 	   163474 	  2.5170% 	    27615712
+Ins Rate:        	  1.4131% 	   101125 	  0.0446% 	      489202
+N Rate:          	 15.2790% 	  1093417 	  3.1348% 	    34393456
+
+Reads:                               	97457822
+Mapped reads:                        	14187365
+Mapped bases:                        	2122672211
+Ref scaffolds:                       	151628
+Ref bases:                           	99154503
+
+Percent mapped:                      	14.557
+Percent proper pairs:                	10.309
+Average coverage:                    	21.408
+Standard deviation:                    	23.203
+Percent scaffolds with any coverage: 	99.62
+Percent of reference bases covered:  	99.53
+
+Total time:     	449.433 seconds.
+ 
+Done mapping
+Tue Mar  7 11:06:41 EST 2023
+Cen23_12102016_R1_S64
+Tue Mar  7 11:06:41 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_12102016_R1_S64/Cen23_12102016_R1_S64.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_12102016_R1_S64_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_12102016_R1_S64_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_12102016_R1_S64.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_12102016_R1_S64/Cen23_12102016_R1_S64.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_12102016_R1_S64_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_12102016_R1_S64_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_12102016_R1_S64.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_12102016_R1_S64/Cen23_12102016_R1_S64.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.155 seconds.
+Loading index for chunk 1-1, build 1
+Indexing threads started for block 0-1
+Indexing threads finished for block 0-1
+Generated Index:	17.347 seconds.
+Analyzed Index:   	2.908 seconds.
+Cleared Memory:    	0.630 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	93880664	(14060370964 bases)
+
+Mapping:          	650.914 seconds.
+Reads/sec:       	144228.95
+kBases/sec:      	21600.96
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	 21.3430% 	 10018468 	 21.3542% 	  3002476278
+bad pairs:       	  3.5119% 	  1648496 	  3.5171% 	   494523326
+insert size avg: 	  354.79
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 30.6632% 	 14393387 	 30.6627% 	  2157433018
+unambiguous:     	 29.7302% 	 13955473 	 29.7304% 	  2091835564
+ambiguous:       	  0.9329% 	   437914 	  0.9323% 	    65597454
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 10.7365% 	  5039744 	 10.7369% 	   755451076
+semiperfect site:	 13.3894% 	  6285011 	 13.3904% 	   942147571
+rescued:         	  1.4406% 	   676228
+
+Match Rate:      	      NA 	       NA 	 89.8983% 	  1987047239
+Error Rate:      	 56.2368% 	  8094379 	  6.6551% 	   147099829
+Sub Rate:        	 55.5505% 	  7995604 	  4.2126% 	    93111654
+Del Rate:        	  2.3980% 	   345156 	  2.3930% 	    52893966
+Ins Rate:        	  1.4595% 	   210073 	  0.0495% 	     1094209
+N Rate:          	 16.5204% 	  2377845 	  3.4465% 	    76179916
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 30.6653% 	 14394407 	 30.6641% 	  2153953088
+unambiguous:     	 29.7365% 	 13958412 	 29.7361% 	  2088764858
+ambiguous:       	  0.9288% 	   435995 	  0.9280% 	    65188230
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	 10.7013% 	  5023203 	 10.7016% 	   751717744
+semiperfect site:	 13.3402% 	  6261927 	 13.3412% 	   937130234
+rescued:         	  1.5111% 	   709293
+
+Match Rate:      	      NA 	       NA 	 89.9305% 	  1984020392
+Error Rate:      	 56.3878% 	  8116694 	  6.6251% 	   146161037
+Sub Rate:        	 55.7110% 	  8019272 	  4.2082% 	    92839992
+Del Rate:        	  2.4078% 	   346593 	  2.3669% 	    52218685
+Ins Rate:        	  1.4712% 	   211771 	  0.0500% 	     1102360
+N Rate:          	 16.4875% 	  2373272 	  3.4444% 	    75990344
+
+Reads:                               	93880664
+Mapped reads:                        	28549919
+Mapped bases:                        	4275747490
+Ref scaffolds:                       	238908
+Ref bases:                           	150834269
+
+Percent mapped:                      	30.411
+Percent proper pairs:                	21.117
+Average coverage:                    	28.347
+Standard deviation:                    	30.463
+Percent scaffolds with any coverage: 	99.63
+Percent of reference bases covered:  	99.56
+
+Total time:     	679.073 seconds.
+ 
+Done mapping
+Tue Mar  7 11:18:01 EST 2023
+Cen23_21102017_R1_S65
+Tue Mar  7 11:18:01 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_21102017_R1_S65/Cen23_21102017_R1_S65.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_21102017_R1_S65_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_21102017_R1_S65_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_21102017_R1_S65.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_21102017_R1_S65/Cen23_21102017_R1_S65.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_21102017_R1_S65_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_21102017_R1_S65_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_21102017_R1_S65.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_21102017_R1_S65/Cen23_21102017_R1_S65.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.157 seconds.
+Loading index for chunk 1-1, build 1
+Indexing threads started for block 0-1
+Indexing threads finished for block 0-1
+Generated Index:	14.274 seconds.
+Analyzed Index:   	4.390 seconds.
+Cleared Memory:    	0.506 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	94190168	(14094962862 bases)
+
+Mapping:          	419.528 seconds.
+Reads/sec:       	224514.66
+kBases/sec:      	33597.20
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	 12.0686% 	  5683714 	 12.0737% 	  1701786628
+bad pairs:       	  1.3263% 	   624608 	  1.3293% 	   187361568
+insert size avg: 	  325.83
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 16.7801% 	  7902619 	 16.7770% 	  1183669738
+unambiguous:     	 16.4141% 	  7730237 	 16.4113% 	  1157872494
+ambiguous:       	  0.3660% 	   172382 	  0.3656% 	    25797244
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  5.7846% 	  2724284 	  5.7837% 	   408056593
+semiperfect site:	  7.1889% 	  3385629 	  7.1883% 	   507160148
+rescued:         	  0.9085% 	   427862
+
+Match Rate:      	      NA 	       NA 	 89.3992% 	  1081639678
+Error Rate:      	 56.8707% 	  4494272 	  7.3107% 	    88452325
+Sub Rate:        	 56.2448% 	  4444810 	  5.1022% 	    61730936
+Del Rate:        	  2.1244% 	   167885 	  2.1679% 	    26229141
+Ins Rate:        	  1.3095% 	   103487 	  0.0407% 	      492248
+N Rate:          	 15.7598% 	  1245434 	  3.2901% 	    39806876
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 16.7873% 	  7905990 	 16.7825% 	  1181427437
+unambiguous:     	 16.4230% 	  7734444 	 16.4188% 	  1155820535
+ambiguous:       	  0.3643% 	   171546 	  0.3638% 	    25606902
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  5.7807% 	  2722411 	  5.7793% 	   406844714
+semiperfect site:	  7.1738% 	  3378497 	  7.1728% 	   504939997
+rescued:         	  0.9542% 	   449396
+
+Match Rate:      	      NA 	       NA 	 89.3154% 	  1079768730
+Error Rate:      	 56.9569% 	  4503007 	  7.4095% 	    89575950
+Sub Rate:        	 56.3301% 	  4453453 	  5.0933% 	    61574850
+Del Rate:        	  2.1171% 	   167381 	  2.2756% 	    27510935
+Ins Rate:        	  1.3016% 	   102903 	  0.0405% 	      490165
+N Rate:          	 15.6842% 	  1239996 	  3.2751% 	    39593692
+
+Reads:                               	94190168
+Mapped reads:                        	15690340
+Mapped bases:                        	2347388764
+Ref scaffolds:                       	168021
+Ref bases:                           	107818244
+
+Percent mapped:                      	16.658
+Percent proper pairs:                	11.953
+Average coverage:                    	21.772
+Standard deviation:                    	22.969
+Percent scaffolds with any coverage: 	99.70
+Percent of reference bases covered:  	99.62
+
+Total time:     	445.434 seconds.
+ 
+Done mapping
+Tue Mar  7 11:25:26 EST 2023
+Cen23_04102018_R1_S66
+Tue Mar  7 11:25:26 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_04102018_R1_S66/Cen23_04102018_R1_S66.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_04102018_R1_S66_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_04102018_R1_S66_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_04102018_R1_S66.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_04102018_R1_S66/Cen23_04102018_R1_S66.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_04102018_R1_S66_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_04102018_R1_S66_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_04102018_R1_S66.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_04102018_R1_S66/Cen23_04102018_R1_S66.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.058 seconds.
+Loading index for chunk 1-1, build 1
+Indexing threads started for block 0-1
+Indexing threads finished for block 0-1
+Generated Index:	2.888 seconds.
+Analyzed Index:   	3.289 seconds.
+Cleared Memory:    	1.333 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	47821322	(7150500513 bases)
+
+Mapping:          	113.135 seconds.
+Reads/sec:       	422693.56
+kBases/sec:      	63203.41
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	  3.8229% 	   914074 	  3.8216% 	   273265166
+bad pairs:       	  0.2900% 	    69341 	  0.2909% 	    20799014
+insert size avg: 	  320.06
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	  5.2733% 	  1260881 	  5.2702% 	   188634830
+unambiguous:     	  5.2250% 	  1249327 	  5.2220% 	   186911784
+ambiguous:       	  0.0483% 	    11554 	  0.0481% 	     1723046
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  2.2122% 	   528946 	  2.2112% 	    79146854
+semiperfect site:	  2.7356% 	   654090 	  2.7348% 	    97886670
+rescued:         	  0.2548% 	    60915
+
+Match Rate:      	      NA 	       NA 	 89.1540% 	   172686380
+Error Rate:      	 47.7391% 	   601933 	  7.4314% 	    14394190
+Sub Rate:        	 46.9687% 	   592220 	  4.7710% 	     9241176
+Del Rate:        	  2.4320% 	    30664 	  2.6122% 	     5059673
+Ins Rate:        	  1.6343% 	    20607 	  0.0482% 	       93341
+N Rate:          	 16.3652% 	   206346 	  3.4146% 	     6613933
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	  5.2765% 	  1261637 	  5.2720% 	   188275822
+unambiguous:     	  5.2274% 	  1249907 	  5.2232% 	   186531366
+ambiguous:       	  0.0491% 	    11730 	  0.0488% 	     1744456
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  2.2048% 	   527179 	  2.2033% 	    78682941
+semiperfect site:	  2.7202% 	   650419 	  2.7188% 	    97093192
+rescued:         	  0.2774% 	    66336
+
+Match Rate:      	      NA 	       NA 	 89.2820% 	   172420766
+Error Rate:      	 48.0571% 	   606307 	  7.3320% 	    14159579
+Sub Rate:        	 47.2919% 	   596653 	  4.7770% 	     9225271
+Del Rate:        	  2.4314% 	    30676 	  2.5080% 	     4843380
+Ins Rate:        	  1.6197% 	    20435 	  0.0471% 	       90928
+N Rate:          	 16.2465% 	   204972 	  3.3859% 	     6538857
+
+Reads:                               	47821322
+Mapped reads:                        	2504099
+Mapped bases:                        	374154231
+Ref scaffolds:                       	37917
+Ref bases:                           	24935726
+
+Percent mapped:                      	5.236
+Percent proper pairs:                	3.787
+Average coverage:                    	15.005
+Standard deviation:                    	19.644
+Percent scaffolds with any coverage: 	99.72
+Percent of reference bases covered:  	99.50
+
+Total time:     	122.449 seconds.
+ 
+Done mapping
+Tue Mar  7 11:27:29 EST 2023
+Cen23_07102019_R1_S67
+Tue Mar  7 11:27:29 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_07102019_R1_S67/Cen23_07102019_R1_S67.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_07102019_R1_S67_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_07102019_R1_S67_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_07102019_R1_S67.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_07102019_R1_S67/Cen23_07102019_R1_S67.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_07102019_R1_S67_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_07102019_R1_S67_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_07102019_R1_S67.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_07102019_R1_S67/Cen23_07102019_R1_S67.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.137 seconds.
+Loading index for chunk 1-1, build 1
+Indexing threads started for block 0-1
+Indexing threads finished for block 0-1
+Generated Index:	14.316 seconds.
+Analyzed Index:   	2.930 seconds.
+Cleared Memory:    	0.590 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	102127352	(15272799221 bases)
+
+Mapping:          	481.476 seconds.
+Reads/sec:       	212113.13
+kBases/sec:      	31720.80
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	 10.1167% 	  5165974 	 10.1091% 	  1543941164
+bad pairs:       	  1.3287% 	   678488 	  1.3324% 	   203501006
+insert size avg: 	  335.64
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 14.5914% 	  7450887 	 14.5813% 	  1114604676
+unambiguous:     	 14.1787% 	  7240153 	 14.1695% 	  1083125945
+ambiguous:       	  0.4127% 	   210734 	  0.4118% 	    31478731
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  4.9616% 	  2533578 	  4.9580% 	   378995213
+semiperfect site:	  6.1693% 	  3150246 	  6.1661% 	   471336692
+rescued:         	  0.8151% 	   416241
+
+Match Rate:      	      NA 	       NA 	 89.0349% 	  1015976189
+Error Rate:      	 57.4631% 	  4281508 	  7.7839% 	    88822000
+Sub Rate:        	 56.8420% 	  4235232 	  5.4143% 	    61782760
+Del Rate:        	  2.2791% 	   169815 	  2.3218% 	    26494334
+Ins Rate:        	  1.5292% 	   113936 	  0.0478% 	      544906
+N Rate:          	 15.4988% 	  1154795 	  3.1812% 	    36300821
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 14.5971% 	  7453832 	 14.5843% 	  1112595766
+unambiguous:     	 14.1842% 	  7242958 	 14.1723% 	  1081171399
+ambiguous:       	  0.4130% 	   210874 	  0.4119% 	    31424367
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  4.9363% 	  2520646 	  4.9318% 	   376236590
+semiperfect site:	  6.1334% 	  3131962 	  6.1293% 	   467590280
+rescued:         	  0.8654% 	   441915
+
+Match Rate:      	      NA 	       NA 	 89.0555% 	  1014232365
+Error Rate:      	 57.7156% 	  4302026 	  7.7684% 	    88472079
+Sub Rate:        	 57.0974% 	  4255942 	  5.4136% 	    61654248
+Del Rate:        	  2.2782% 	   169811 	  2.3076% 	    26280978
+Ins Rate:        	  1.5165% 	   113034 	  0.0471% 	      536853
+N Rate:          	 15.4300% 	  1150126 	  3.1761% 	    36172300
+
+Reads:                               	102127352
+Mapped reads:                        	14800261
+Mapped bases:                        	2211567392
+Ref scaffolds:                       	166665
+Ref bases:                           	106191899
+
+Percent mapped:                      	14.492
+Percent proper pairs:                	10.025
+Average coverage:                    	20.826
+Standard deviation:                    	22.813
+Percent scaffolds with any coverage: 	99.63
+Percent of reference bases covered:  	99.46
+
+Total time:     	514.946 seconds.
+ 
+Done mapping
+Tue Mar  7 11:36:04 EST 2023
+Cen23_15102020_R1_S68
+Tue Mar  7 11:36:04 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_15102020_R1_S68/Cen23_15102020_R1_S68.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_15102020_R1_S68_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_15102020_R1_S68_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_15102020_R1_S68.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_15102020_R1_S68/Cen23_15102020_R1_S68.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_15102020_R1_S68_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_15102020_R1_S68_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_15102020_R1_S68.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_15102020_R1_S68/Cen23_15102020_R1_S68.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.152 seconds.
+Loading index for chunk 1-1, build 1
+Indexing threads started for block 0-1
+Indexing threads finished for block 0-1
+Generated Index:	7.848 seconds.
+Analyzed Index:   	4.003 seconds.
+Cleared Memory:    	0.555 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	74528594	(11148747418 bases)
+
+Mapping:          	310.981 seconds.
+Reads/sec:       	239656.67
+kBases/sec:      	35850.29
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	  9.1169% 	  3397331 	  9.1141% 	  1016104416
+bad pairs:       	  1.0113% 	   376852 	  1.0139% 	   113039358
+insert size avg: 	  333.71
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 12.7732% 	  4759843 	 12.7663% 	   712377753
+unambiguous:     	 12.5047% 	  4659796 	 12.4983% 	   697423636
+ambiguous:       	  0.2685% 	   100047 	  0.2680% 	    14954117
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  4.9134% 	  1830936 	  4.9100% 	   273988411
+semiperfect site:	  6.0391% 	  2250433 	  6.0360% 	   336819745
+rescued:         	  0.6946% 	   258823
+
+Match Rate:      	      NA 	       NA 	 89.0233% 	   651646111
+Error Rate:      	 52.3977% 	  2494052 	  7.7845% 	    56982502
+Sub Rate:        	 51.6332% 	  2457659 	  5.0639% 	    37067406
+Del Rate:        	  2.2215% 	   105741 	  2.6800% 	    19617552
+Ins Rate:        	  1.3360% 	    63593 	  0.0406% 	      297544
+N Rate:          	 15.4015% 	   733088 	  3.1922% 	    23366692
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 12.7778% 	  4761564 	 12.7689% 	   711048125
+unambiguous:     	 12.5090% 	  4661388 	 12.5007% 	   696111566
+ambiguous:       	  0.2688% 	   100176 	  0.2682% 	    14936559
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  4.8739% 	  1816225 	  4.8698% 	   271178130
+semiperfect site:	  5.9915% 	  2232705 	  5.9876% 	   333424429
+rescued:         	  0.7355% 	   274066
+
+Match Rate:      	      NA 	       NA 	 89.0680% 	   650409014
+Error Rate:      	 52.7760% 	  2512964 	  7.7418% 	    56533265
+Sub Rate:        	 52.0265% 	  2477276 	  5.0729% 	    37044288
+Del Rate:        	  2.2198% 	   105695 	  2.6280% 	    19190561
+Ins Rate:        	  1.3461% 	    64095 	  0.0409% 	      298416
+N Rate:          	 15.3887% 	   732742 	  3.1902% 	    23296407
+
+Reads:                               	74528594
+Mapped reads:                        	9441723
+Mapped bases:                        	1411496587
+Ref scaffolds:                       	114670
+Ref bases:                           	75558414
+
+Percent mapped:                      	12.669
+Percent proper pairs:                	9.018
+Average coverage:                    	18.681
+Standard deviation:                    	19.614
+Percent scaffolds with any coverage: 	99.63
+Percent of reference bases covered:  	99.56
+
+Total time:     	330.971 seconds.
+ 
+Done mapping
+Tue Mar  7 11:41:35 EST 2023
+Cen23_06102021_R1_S69
+Tue Mar  7 11:41:35 EST 2023
+Begining mapping
+java -Djava.library.path=/mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/jni/ -ea -Xmx85605m -cp /mnt/home/barne424/anaconda3/envs/metagenome_proc/opt/bbmap-38.18/current/ align2.BBMap build=1 overwrite=true fastareadlen=500 ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_06102021_R1_S69/Cen23_06102021_R1_S69.prokka.ffn in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_06102021_R1_S69_R1.clean.EC.fastq.gz in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_06102021_R1_S69_R2.clean.EC.fastq.gz covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_06102021_R1_S69.ORF.cov.txt nodisk threads=50
+Executing align2.BBMap [build=1, overwrite=true, fastareadlen=500, ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_06102021_R1_S69/Cen23_06102021_R1_S69.prokka.ffn, in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_06102021_R1_S69_R1.clean.EC.fastq.gz, in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/Cen23_06102021_R1_S69_R2.clean.EC.fastq.gz, covstats=/mnt/home/barne424/data/Centralia_metagenome/ORF_coverages/Cen23_06102021_R1_S69.ORF.cov.txt, nodisk, threads=50]
+Version 38.18
+
+Set threads to 50
+Retaining first best site only for ambiguous mappings.
+No output file.
+Executing dna.FastaToChromArrays2 [/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/Cen23_06102021_R1_S69/Cen23_06102021_R1_S69.prokka.ffn, 1, writeinthread=false, genscaffoldinfo=true, retain, waitforwriting=false, gz=true, maxlen=536670912, writechroms=false, minscaf=1, midpad=300, startpad=8000, stoppad=8000, nodisk=true]
+
+Set genScaffoldInfo=true
+Set genome to 1
+
+Loaded Reference:	0.093 seconds.
+Loading index for chunk 1-1, build 1
+Indexing threads started for block 0-1
+Indexing threads finished for block 0-1
+Generated Index:	7.164 seconds.
+Analyzed Index:   	3.654 seconds.
+Cleared Memory:    	0.599 seconds.
+Processing reads in paired-ended mode.
+Started read stream.
+Started 50 mapping threads.
+Detecting finished threads: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49
+
+   ------------------   Results   ------------------   
+
+Genome:                	1
+Key Length:            	13
+Max Indel:             	16000
+Minimum Score Ratio:  	0.56
+Mapping Mode:         	normal
+Reads Used:           	70046314	(10473418485 bases)
+
+Mapping:          	232.204 seconds.
+Reads/sec:       	301658.88
+kBases/sec:      	45104.44
+
+
+Pairing data:   	pct pairs	num pairs 	pct bases	   num bases
+
+mated pairs:     	  7.6056% 	  2663714 	  7.6021% 	   796203630
+bad pairs:       	  0.7965% 	   278943 	  0.7988% 	    83664730
+insert size avg: 	  330.99
+
+
+Read 1 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 10.8219% 	  3790177 	 10.8163% 	   567019874
+unambiguous:     	 10.6279% 	  3722216 	 10.6227% 	   556872287
+ambiguous:       	  0.1940% 	    67961 	  0.1936% 	    10147587
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  3.9771% 	  1392893 	  3.9740% 	   208329005
+semiperfect site:	  4.9438% 	  1731464 	  4.9411% 	   259025640
+rescued:         	  0.6081% 	   212990
+
+Match Rate:      	      NA 	       NA 	 89.0988% 	   516696678
+Error Rate:      	 53.9902% 	  2046323 	  7.6323% 	    44260659
+Sub Rate:        	 53.3324% 	  2021393 	  5.3671% 	    31124438
+Del Rate:        	  2.1158% 	    80191 	  2.2235% 	    12894130
+Ins Rate:        	  1.3828% 	    52410 	  0.0417% 	      242091
+N Rate:          	 15.8292% 	   599956 	  3.2689% 	    18956667
+
+
+Read 2 data:      	pct reads	num reads 	pct bases	   num bases
+
+mapped:          	 10.8299% 	  3792990 	 10.8225% 	   566143072
+unambiguous:     	 10.6318% 	  3723609 	 10.6250% 	   555808257
+ambiguous:       	  0.1981% 	    69381 	  0.1976% 	    10334815
+low-Q discards:  	  0.0000% 	        0 	  0.0000% 	           0
+
+perfect best site:	  3.9445% 	  1381492 	  3.9407% 	   206143747
+semiperfect site:	  4.9073% 	  1718679 	  4.9038% 	   256524626
+rescued:         	  0.6466% 	   226459
+
+Match Rate:      	      NA 	       NA 	 89.0147% 	   515766213
+Error Rate:      	 54.3535% 	  2061622 	  7.7039% 	    44637587
+Sub Rate:        	 53.6958% 	  2036677 	  5.3723% 	    31127857
+Del Rate:        	  2.1387% 	    81120 	  2.2909% 	    13273926
+Ins Rate:        	  1.3702% 	    51970 	  0.0407% 	      235804
+N Rate:          	 15.8454% 	   601013 	  3.2814% 	    19013198
+
+Reads:                               	70046314
+Mapped reads:                        	7530348
+Mapped bases:                        	1125257999
+Ref scaffolds:                       	96072
+Ref bases:                           	61010736
+
+Percent mapped:                      	10.751
+Percent proper pairs:                	7.537
+Average coverage:                    	18.444
+Standard deviation:                    	19.735
+Percent scaffolds with any coverage: 	99.68
+Percent of reference bases covered:  	99.49
+
+Total time:     	254.760 seconds.
+ 
+Done mapping
+Tue Mar  7 11:45:50 EST 2023
+ 
+ 
+Done!
+Tue Mar  7 11:45:50 EST 2023

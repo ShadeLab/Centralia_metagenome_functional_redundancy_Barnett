@@ -1,0 +1,63 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=dRep
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=100
+#SBATCH --mem=50G
+#SBATCH --output=S3_dereplicate_bins.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate dRep
+
+echo "Begining dereplicating bins"
+date
+echo " "
+echo " "
+
+echo "First copy bin fasta files and rename"
+for pfx in $(cat full_sample_list.txt)
+do
+	for fasta in $(ls /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/refined_bins/${pfx}/metawrap_50_10_bins)
+	do
+		cp /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/refined_bins/${pfx}/metawrap_50_10_bins/$fasta \
+			/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/temp_bins/${pfx}_$fasta
+	done
+done
+echo " "
+echo " "
+echo "Now combine the CheckM files from before so you dont have to run checkM again"
+python get_refined_checkm.py \
+	full_sample_list.txt \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/refined_bins \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/refined_bins
+echo " "
+echo " "
+
+echo "Now run dRep"
+dRep dereplicate \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_bins \
+	-g /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/temp_bins/*.fa \
+	-comp 50 \
+	-con 10 \
+	--genomeInfo /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/refined_bins/refined_bin_checkM.txt \
+	--S_algorithm fastANI \
+	-pa 0.95 \
+	-sa 0.99 \
+	--skip_plots \
+	-p 100
+
+echo " "
+echo " "
+echo "Cleanup"
+rm /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/temp_bins/*
+
+echo "Done!"
+date
+conda deactivate

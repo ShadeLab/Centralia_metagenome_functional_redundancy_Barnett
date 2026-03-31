@@ -1,0 +1,46 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=prokka
+#SBATCH --time=72:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=100
+#SBATCH --mem=100G
+#SBATCH --output=S1_prokka_assembly.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate genome_annotation
+
+echo "Begining prokka annotations"
+date
+
+for pfx in $(cat full_sample_list.txt)
+do
+	echo "Performing annotation"
+	echo ${pfx}
+	echo date
+	echo " "
+	prokka \
+		--cpus 100 \
+		--outdir /mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/${pfx} \
+		--prefix ${pfx}.prokka \
+		--metagenome \
+		--compliant \
+		--centre RTSF \
+		--quiet \
+		/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_contigs/${pfx}.filt_scaffolds.fasta
+	echo " "
+	echo " "
+	echo "Done!"
+	date
+done
+echo " "
+echo " "
+echo "Done with all sites!"
+date
+conda deactivate

@@ -1,0 +1,49 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=CAZymes
+#SBATCH --time=15:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=7G
+#SBATCH -A shade-cole-bonito
+#SBATCH --output=CAZymes.%A_%a.out
+#SBATCH --array=1-69
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate genome_annotation
+
+config=full_sample_config.txt
+
+pfx=$(awk -v ArrayTaskID=$SLURM_ARRAY_TASK_ID '$1==ArrayTaskID {print $2}' $config)
+
+echo "Begining CAZyme annotations"
+echo ${pfx}
+date
+mkdir /mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}
+
+cp ~/databases/dbCAN/dbCAN-HMMdb-V11.txt /mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}/.
+hmmpress /mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}/dbCAN-HMMdb-V11.txt
+
+hmmscan \
+	--cpu 1 \
+	--domtblout /mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}/${pfx}.CAZymes.out.dm \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}/dbCAN-HMMdb-V11.txt \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/${pfx}/${pfx}.prokka.faa \
+	> /mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}/${pfx}.CAZymes.out
+	
+sh ~/repo/hmmscan-parser.sh \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}/${pfx}.CAZymes.out.dm \
+	> /mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}/${pfx}.CAZymes.out.dm.ps
+
+cat /mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}/${pfx}.CAZymes.out.dm.ps \
+	| awk '$5<1e-15&&$10>0.35' \
+	> /mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/specific_enzymes/${pfx}/${pfx}.CAZymes.out.dm.ps.stringent
+echo "Done!"
+date
+
+conda deactivate

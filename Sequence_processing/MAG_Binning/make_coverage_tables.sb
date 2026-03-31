@@ -1,0 +1,30 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=coverage_table
+#SBATCH --time=2:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=100G
+#SBATCH --output=coverage_table.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate genome_annotation
+
+echo "Getting coverage tables"
+date
+
+python get_coverage_output.py \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/coverages \
+	full_sample_list.txt \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/coverages/MAG_contig_coverages.txt
+
+echo "Done!"
+date
+
+conda deactivate

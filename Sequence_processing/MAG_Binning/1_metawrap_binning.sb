@@ -1,0 +1,53 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=metawrap_binning
+#SBATCH --time=72:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=50
+#SBATCH --mem=250G
+#SBATCH -A shade-cole-bonito
+#SBATCH --array=1-69%5
+#SBATCH --output=metawrap_binning.%A_%a.out
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate metawrap_env
+
+config=full_sample_config.txt
+
+pfx1=$(awk -v ArrayTaskID=$SLURM_ARRAY_TASK_ID '$1==ArrayTaskID {print $2}' $config)
+
+echo "Starting"
+echo ${pfx1}
+date
+echo " "
+echo " "
+
+pigz -d -c -k -p 50 \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx1}_R1.clean.EC.fastq.gz \
+	> /mnt/research/ShadeLab/Barnett/Centralia_metagenome/uncompressed_reads/${pfx1}_1.fastq
+
+pigz -d -c -k -p 50 \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx1}_R2.clean.EC.fastq.gz \
+	> /mnt/research/ShadeLab/Barnett/Centralia_metagenome/uncompressed_reads/${pfx1}_2.fastq
+
+metawrap binning \
+	-o /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/initial_bins/${pfx1} \
+	-t 50 \
+	-a /mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_contigs/${pfx1}.filt_scaffolds.fasta \
+	--metabat2 \
+	--maxbin2 \
+	--concoct \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/uncompressed_reads/${pfx1}_1.fastq \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/uncompressed_reads/${pfx1}_2.fastq
+
+rm /mnt/research/ShadeLab/Barnett/Centralia_metagenome/uncompressed_reads/${pfx1}_1.fastq
+rm /mnt/research/ShadeLab/Barnett/Centralia_metagenome/uncompressed_reads/${pfx1}_2.fastq
+
+echo "Done!"
+date
+conda deactivate

@@ -1,0 +1,212 @@
+
+Lmod is automatically replacing "Python/3.6.4" with "Conda/3".
+
+Begining dereplicating bins
+Thu Jan 11 14:45:05 EST 2024
+ 
+ 
+First copy bin fasta files and rename
+ls: cannot access /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/refined_bins/Cen17_03102018_R1_S38/metawrap_50_10_bins: No such file or directory
+ 
+ 
+Now combine the CheckM files from before so you dont have to run checkM again
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+/mnt/ufs18/home-117/barne424/notebooks/Centralia_metagenome/metawrap_binning/get_refined_checkm.py:36: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
+  checkM_df = checkM_df.append(sub_annotation, ignore_index=True)
+Number of arguments:  4 arguments.
+Sample list:  full_sample_list.txt
+Refined bin directory:  /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/refined_bins
+Combined directory:  /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/refined_bins
+
+---
+
+Getting checkM outputs from refined bins
+Cen17_03102018_R1_S38 is missing its CheckM stats file
+ 
+ 
+Now run dRep
+***************************************************
+    ..:: dRep dereplicate Step 1. Filter ::..
+***************************************************
+    
+Will filter the genome list
+1,974 genomes were input to dRep
+Calculating genome info of genomes
+100.00% of genomes passed length filtering
+100.00% of genomes passed checkM filtering
+***************************************************
+    ..:: dRep dereplicate Step 2. Cluster ::..
+***************************************************
+    
+Running primary clustering
+Running pair-wise MASH clustering
+851 primary clusters made
+Running secondary clustering
+Running 13114 fastANI comparisons- should take ~ 29.1 min
+Step 4. Return output
+***************************************************
+    ..:: dRep dereplicate Step 3. Choose ::..
+***************************************************
+    
+Loading work directory
+***************************************************
+    ..:: dRep dereplicate Step 4. Evaluate ::..
+***************************************************
+    
+will produce Widb (winner information db)
+Winner database saved to /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_binsdata_tables/Widb.csv
+***************************************************
+    ..:: dRep dereplicate Step 5. Analyze ::..
+***************************************************
+    
+making plots 
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+    ..:: dRep dereplicate finished ::..
+
+Dereplicated genomes................. /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_bins/dereplicated_genomes/
+Dereplicated genomes information..... /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_bins/data_tables/Widb.csv
+Figures.............................. /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_bins/figures/
+Warnings............................. /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_bins/log/warnings.txt
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    
+ 
+ 
+Cleanup
+Done!
+Fri Jan 12 00:38:56 EST 2024

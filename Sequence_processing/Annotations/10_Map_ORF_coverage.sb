@@ -1,0 +1,41 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=ORF_coverages
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=50
+#SBATCH --mem=100G
+#SBATCH --output=S10_ORF_coverage.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate metagenome_proc
+
+for pfx in $(cat full_sample_list.txt)
+do
+	echo ${pfx}
+	date
+	echo "Begining mapping"
+	bbmap.sh \
+		ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/annotations/metagenome_prokka_output/${pfx}/${pfx}.prokka.ffn \
+		in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R1.clean.EC.fastq.gz \
+		in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R2.clean.EC.fastq.gz \
+		covstats=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/ORF_coverages/${pfx}.ORF.cov.txt \
+		nodisk \
+		threads=50
+	echo " "
+	echo "Done mapping"
+	date
+done
+
+echo " "
+echo " "
+echo "Done!"
+date
+
+conda deactivate

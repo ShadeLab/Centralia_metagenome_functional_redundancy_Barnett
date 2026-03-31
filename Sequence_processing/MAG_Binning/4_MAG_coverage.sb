@@ -1,0 +1,63 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=get_coverage
+#SBATCH --time=72:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=50
+#SBATCH --mem=100G
+#SBATCH --output=S4_MAG_coverage.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate metagenome_proc
+echo "Starting"
+date
+echo " "
+echo " "
+
+echo "Combine MAGs into single fasta file"
+echo " "
+python combine_MAG_fasta.py \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_bins/data_tables/Widb.csv \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_bins/dereplicated_genomes \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/combined_MAGs.fa \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/MAG_contig_map.txt
+echo " "
+echo " "
+
+echo "Begining indexing"
+echo " "
+echo " " 
+bbmap.sh ref=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/combined_MAGs.fa \ 
+	threads=50
+echo " "
+echo " " 
+
+echo "Begining mapping"
+echo " "
+echo " "
+for pfx in $(cat full_sample_list.txt)
+do
+	bbmap.sh in=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R1.clean.EC.fastq.gz \
+		in2=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/filt_seq/${pfx}_R2.clean.EC.fastq.gz \
+		covstats=/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/coverages/${pfx}.cov.txt \
+		threads=50 \
+		fast=t
+	echo " "
+	echo " "
+done
+echo " "
+echo " "
+
+echo "Cleaning up"
+rm /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/combined_MAGs.fa
+echo " "
+
+echo "Done!"
+date
+conda deactivate

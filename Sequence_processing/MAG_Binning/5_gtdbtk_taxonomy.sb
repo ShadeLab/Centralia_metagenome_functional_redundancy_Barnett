@@ -1,0 +1,32 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=gtdbtk
+#SBATCH --time=5:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=25
+#SBATCH --mem=100G
+#SBATCH --output=S5_gtdbtk.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate gtdbtk-2.1.1
+
+echo "Begining taxonomy assignment with gtdbtk"
+date
+echo " "
+gtdbtk classify_wf \
+	--genome_dir /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_bins/dereplicated_genomes \
+	--out_dir /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/gtdbtk_output \
+	-x fa \
+	--cpus 25 \
+	--pplacer_cpus 25
+
+echo " "
+echo "Done!"
+date
+conda deactivate

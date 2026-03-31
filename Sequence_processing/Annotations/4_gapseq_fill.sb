@@ -1,0 +1,33 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=gapseq
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=20G
+#SBATCH --output=S4_gapseq_fill.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+module purge
+module load Conda/3
+conda activate gapseq-dev
+
+echo "Begining gapseq fill"
+date
+
+/mnt/research/ShadeLab/Barnett/repo/gapseq/gapseq fill \
+	-m Cen14_13102020_R1_S19_bin.17-draft.RDS \
+	-c Cen14_13102020_R1_S19_bin.17-rxnWeights.RDS \
+	-g Cen14_13102020_R1_S19_bin.17-rxnXgenes.RDS \
+	-n /mnt/research/ShadeLab/Barnett/repo/gapseq/dat/media/TSBmed.csv
+
+echo " "
+echo " "
+echo "Done with all MAGs!"
+date
+conda deactivate
+

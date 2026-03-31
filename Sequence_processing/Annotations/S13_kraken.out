@@ -1,0 +1,698 @@
+Running kraken2
+Tue Jun 27 15:33:01 EDT 2023
+ 
+ 
+Cen08_13102015_R1_S1
+Tue Jun 27 15:33:01 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+160125 sequences (351.14 Mbp) processed in 4.338s (2214.9 Kseq/m, 4857.05 Mbp/m).
+  118074 sequences classified (73.74%)
+  42051 sequences unclassified (26.26%)
+ 
+Tue Jun 27 15:33:27 EDT 2023
+Cen08_12102016_R1_S2
+Tue Jun 27 15:33:27 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+101237 sequences (243.87 Mbp) processed in 3.540s (1716.0 Kseq/m, 4133.54 Mbp/m).
+  80484 sequences classified (79.50%)
+  20753 sequences unclassified (20.50%)
+ 
+Tue Jun 27 15:33:51 EDT 2023
+Cen08_21102017_R1_S3
+Tue Jun 27 15:33:51 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+74881 sequences (186.13 Mbp) processed in 2.954s (1520.9 Kseq/m, 3780.57 Mbp/m).
+  53451 sequences classified (71.38%)
+  21430 sequences unclassified (28.62%)
+ 
+Tue Jun 27 15:34:14 EDT 2023
+Cen08_04102018_R1_S4
+Tue Jun 27 15:34:14 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+69059 sequences (177.36 Mbp) processed in 3.073s (1348.4 Kseq/m, 3463.08 Mbp/m).
+  53751 sequences classified (77.83%)
+  15308 sequences unclassified (22.17%)
+ 
+Tue Jun 27 15:34:37 EDT 2023
+Cen08_15102020_R1_S5
+Tue Jun 27 15:34:37 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+72853 sequences (195.54 Mbp) processed in 3.289s (1329.0 Kseq/m, 3566.98 Mbp/m).
+  56563 sequences classified (77.64%)
+  16290 sequences unclassified (22.36%)
+ 
+Tue Jun 27 15:35:00 EDT 2023
+Cen08_06102021_R1_S6
+Tue Jun 27 15:35:00 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+82965 sequences (234.73 Mbp) processed in 3.387s (1469.9 Kseq/m, 4158.73 Mbp/m).
+  63135 sequences classified (76.10%)
+  19830 sequences unclassified (23.90%)
+ 
+Tue Jun 27 15:35:23 EDT 2023
+Cen11_12102015_R1_S7
+Tue Jun 27 15:35:23 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+138368 sequences (288.07 Mbp) processed in 3.798s (2185.7 Kseq/m, 4550.58 Mbp/m).
+  103413 sequences classified (74.74%)
+  34955 sequences unclassified (25.26%)
+ 
+Tue Jun 27 15:35:47 EDT 2023
+Cen11_11102016_R1_S8
+Tue Jun 27 15:35:47 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+129881 sequences (281.69 Mbp) processed in 4.154s (1875.8 Kseq/m, 4068.41 Mbp/m).
+  97952 sequences classified (75.42%)
+  31929 sequences unclassified (24.58%)
+ 
+Tue Jun 27 15:36:14 EDT 2023
+Cen11_20102017_R1_S9
+Tue Jun 27 15:36:14 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+163879 sequences (374.77 Mbp) processed in 4.551s (2160.5 Kseq/m, 4940.70 Mbp/m).
+  118714 sequences classified (72.44%)
+  45165 sequences unclassified (27.56%)
+ 
+Tue Jun 27 15:36:39 EDT 2023
+Cen11_03102018_R1_S10
+Tue Jun 27 15:36:39 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+144335 sequences (345.42 Mbp) processed in 4.537s (1908.8 Kseq/m, 4568.04 Mbp/m).
+  104383 sequences classified (72.32%)
+  39952 sequences unclassified (27.68%)
+ 
+Tue Jun 27 15:37:08 EDT 2023
+Cen11_06102019_R1_S11
+Tue Jun 27 15:37:08 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+82766 sequences (201.04 Mbp) processed in 2.514s (1975.3 Kseq/m, 4798.01 Mbp/m).
+  56204 sequences classified (67.91%)
+  26562 sequences unclassified (32.09%)
+ 
+Tue Jun 27 15:37:31 EDT 2023
+Cen11_13102020_R1_S12
+Tue Jun 27 15:37:31 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+118956 sequences (238.11 Mbp) processed in 3.029s (2356.2 Kseq/m, 4716.20 Mbp/m).
+  90222 sequences classified (75.84%)
+  28734 sequences unclassified (24.16%)
+ 
+Tue Jun 27 15:37:55 EDT 2023
+Cen11_06102021_R1_S13
+Tue Jun 27 15:37:55 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+71500 sequences (151.50 Mbp) processed in 2.507s (1711.0 Kseq/m, 3625.43 Mbp/m).
+  55993 sequences classified (78.31%)
+  15507 sequences unclassified (21.69%)
+ 
+Tue Jun 27 15:38:16 EDT 2023
+Cen14_12102015_R1_S14
+Tue Jun 27 15:38:16 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+117428 sequences (374.85 Mbp) processed in 8.629s (816.5 Kseq/m, 2606.47 Mbp/m).
+  99322 sequences classified (84.58%)
+  18106 sequences unclassified (15.42%)
+ 
+Tue Jun 27 15:38:49 EDT 2023
+Cen14_11102016_R1_S15
+Tue Jun 27 15:38:49 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+110577 sequences (403.59 Mbp) processed in 4.756s (1395.0 Kseq/m, 5091.45 Mbp/m).
+  95695 sequences classified (86.54%)
+  14882 sequences unclassified (13.46%)
+ 
+Tue Jun 27 15:39:15 EDT 2023
+Cen14_19102017_R1_S16
+Tue Jun 27 15:39:15 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+121111 sequences (318.41 Mbp) processed in 4.730s (1536.4 Kseq/m, 4039.24 Mbp/m).
+  101093 sequences classified (83.47%)
+  20018 sequences unclassified (16.53%)
+ 
+Tue Jun 27 15:39:43 EDT 2023
+Cen14_02102018_R1_S17
+Tue Jun 27 15:39:43 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+118460 sequences (387.23 Mbp) processed in 4.706s (1510.2 Kseq/m, 4936.57 Mbp/m).
+  100426 sequences classified (84.78%)
+  18034 sequences unclassified (15.22%)
+ 
+Tue Jun 27 15:40:12 EDT 2023
+Cen14_06102019_R1_S18
+Tue Jun 27 15:40:12 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+123103 sequences (358.80 Mbp) processed in 5.150s (1434.2 Kseq/m, 4180.14 Mbp/m).
+  107292 sequences classified (87.16%)
+  15811 sequences unclassified (12.84%)
+ 
+Tue Jun 27 15:40:38 EDT 2023
+Cen14_13102020_R1_S19
+Tue Jun 27 15:40:38 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+106684 sequences (262.29 Mbp) processed in 3.842s (1665.9 Kseq/m, 4095.72 Mbp/m).
+  88078 sequences classified (82.56%)
+  18606 sequences unclassified (17.44%)
+ 
+Tue Jun 27 15:41:01 EDT 2023
+Cen14_05102021_R1_S20
+Tue Jun 27 15:41:01 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+97150 sequences (239.26 Mbp) processed in 3.334s (1748.4 Kseq/m, 4305.86 Mbp/m).
+  81286 sequences classified (83.67%)
+  15864 sequences unclassified (16.33%)
+ 
+Tue Jun 27 15:41:25 EDT 2023
+Cen15_12102015_R1_S21
+Tue Jun 27 15:41:25 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+128596 sequences (440.40 Mbp) processed in 5.264s (1465.8 Kseq/m, 5019.80 Mbp/m).
+  106297 sequences classified (82.66%)
+  22299 sequences unclassified (17.34%)
+ 
+Tue Jun 27 15:41:55 EDT 2023
+Cen15_11102016_R1_S22
+Tue Jun 27 15:41:55 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+120958 sequences (459.01 Mbp) processed in 4.753s (1526.9 Kseq/m, 5794.14 Mbp/m).
+  91256 sequences classified (75.44%)
+  29702 sequences unclassified (24.56%)
+ 
+Tue Jun 27 15:42:22 EDT 2023
+Cen15_19102017_R1_S23
+Tue Jun 27 15:42:22 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+145031 sequences (425.78 Mbp) processed in 4.616s (1885.3 Kseq/m, 5534.80 Mbp/m).
+  107682 sequences classified (74.25%)
+  37349 sequences unclassified (25.75%)
+ 
+Tue Jun 27 15:42:47 EDT 2023
+Cen15_02102018_R1_S24
+Tue Jun 27 15:42:47 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+144158 sequences (397.88 Mbp) processed in 5.064s (1708.2 Kseq/m, 4714.59 Mbp/m).
+  115313 sequences classified (79.99%)
+  28845 sequences unclassified (20.01%)
+ 
+Tue Jun 27 15:43:13 EDT 2023
+Cen15_06102019_R1_S25
+Tue Jun 27 15:43:13 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+45047 sequences (112.42 Mbp) processed in 1.775s (1522.6 Kseq/m, 3799.81 Mbp/m).
+  32518 sequences classified (72.19%)
+  12529 sequences unclassified (27.81%)
+ 
+Tue Jun 27 15:43:32 EDT 2023
+Cen15_13102020_R1_S26
+Tue Jun 27 15:43:32 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+113636 sequences (312.81 Mbp) processed in 5.087s (1340.3 Kseq/m, 3689.58 Mbp/m).
+  86123 sequences classified (75.79%)
+  27513 sequences unclassified (24.21%)
+ 
+Tue Jun 27 15:44:00 EDT 2023
+Cen15_05102021_R1_S27
+Tue Jun 27 15:44:00 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+99775 sequences (258.55 Mbp) processed in 3.712s (1612.6 Kseq/m, 4178.70 Mbp/m).
+  80212 sequences classified (80.39%)
+  19563 sequences unclassified (19.61%)
+ 
+Tue Jun 27 15:44:24 EDT 2023
+Cen16_12102015_R1_S28
+Tue Jun 27 15:44:24 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+142749 sequences (347.97 Mbp) processed in 4.912s (1743.9 Kseq/m, 4250.87 Mbp/m).
+  116130 sequences classified (81.35%)
+  26619 sequences unclassified (18.65%)
+ 
+Tue Jun 27 15:44:52 EDT 2023
+Cen16_11102016_R1_S29
+Tue Jun 27 15:44:52 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+143271 sequences (351.21 Mbp) processed in 4.761s (1805.6 Kseq/m, 4426.10 Mbp/m).
+  110261 sequences classified (76.96%)
+  33010 sequences unclassified (23.04%)
+ 
+Tue Jun 27 15:45:17 EDT 2023
+Cen16_19102017_R1_S30
+Tue Jun 27 15:45:17 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+71367 sequences (203.65 Mbp) processed in 2.968s (1443.0 Kseq/m, 4117.60 Mbp/m).
+  56906 sequences classified (79.74%)
+  14461 sequences unclassified (20.26%)
+ 
+Tue Jun 27 15:45:40 EDT 2023
+Cen16_02102018_R1_S31
+Tue Jun 27 15:45:40 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+115981 sequences (279.32 Mbp) processed in 3.998s (1740.6 Kseq/m, 4191.87 Mbp/m).
+  89749 sequences classified (77.38%)
+  26232 sequences unclassified (22.62%)
+ 
+Tue Jun 27 15:46:04 EDT 2023
+Cen16_06102019_R1_S32
+Tue Jun 27 15:46:04 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+147813 sequences (377.44 Mbp) processed in 4.685s (1893.1 Kseq/m, 4834.18 Mbp/m).
+  113116 sequences classified (76.53%)
+  34697 sequences unclassified (23.47%)
+ 
+Tue Jun 27 15:46:30 EDT 2023
+Cen16_15102020_R1_S33
+Tue Jun 27 15:46:30 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+107954 sequences (282.99 Mbp) processed in 3.902s (1660.2 Kseq/m, 4352.00 Mbp/m).
+  87023 sequences classified (80.61%)
+  20931 sequences unclassified (19.39%)
+ 
+Tue Jun 27 15:46:54 EDT 2023
+Cen16_05102021_R1_S34
+Tue Jun 27 15:46:54 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+142040 sequences (365.98 Mbp) processed in 5.178s (1645.9 Kseq/m, 4240.78 Mbp/m).
+  112312 sequences classified (79.07%)
+  29728 sequences unclassified (20.93%)
+ 
+Tue Jun 27 15:47:24 EDT 2023
+Cen17_12102015_R1_S35
+Tue Jun 27 15:47:24 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+32436 sequences (49.41 Mbp) processed in 1.171s (1661.5 Kseq/m, 2530.98 Mbp/m).
+  29500 sequences classified (90.95%)
+  2936 sequences unclassified (9.05%)
+ 
+Tue Jun 27 15:47:43 EDT 2023
+Cen17_12102016_R1_S36
+Tue Jun 27 15:47:43 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+110909 sequences (208.50 Mbp) processed in 3.063s (2172.2 Kseq/m, 4083.67 Mbp/m).
+  89677 sequences classified (80.86%)
+  21232 sequences unclassified (19.14%)
+ 
+Tue Jun 27 15:48:05 EDT 2023
+Cen17_21102017_R1_S37
+Tue Jun 27 15:48:05 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+31726 sequences (51.31 Mbp) processed in 0.945s (2014.1 Kseq/m, 3257.55 Mbp/m).
+  23998 sequences classified (75.64%)
+  7728 sequences unclassified (24.36%)
+ 
+Tue Jun 27 15:48:23 EDT 2023
+Cen17_03102018_R1_S38
+Tue Jun 27 15:48:23 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+25206 sequences (42.23 Mbp) processed in 0.881s (1715.9 Kseq/m, 2875.00 Mbp/m).
+  20158 sequences classified (79.97%)
+  5048 sequences unclassified (20.03%)
+ 
+Tue Jun 27 15:48:43 EDT 2023
+Cen17_06102019_R1_S39
+Tue Jun 27 15:48:43 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+52161 sequences (82.65 Mbp) processed in 1.343s (2330.3 Kseq/m, 3692.43 Mbp/m).
+  39573 sequences classified (75.87%)
+  12588 sequences unclassified (24.13%)
+ 
+Tue Jun 27 15:49:02 EDT 2023
+Cen17_14102020_R1_S40
+Tue Jun 27 15:49:02 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+38196 sequences (63.93 Mbp) processed in 1.267s (1809.0 Kseq/m, 3027.91 Mbp/m).
+  29944 sequences classified (78.40%)
+  8252 sequences unclassified (21.60%)
+ 
+Tue Jun 27 15:49:22 EDT 2023
+Cen17_05102021_R1_S41
+Tue Jun 27 15:49:22 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+18915 sequences (30.15 Mbp) processed in 0.672s (1689.6 Kseq/m, 2692.95 Mbp/m).
+  14994 sequences classified (79.27%)
+  3921 sequences unclassified (20.73%)
+ 
+Tue Jun 27 15:49:39 EDT 2023
+Cen19_12102015_R1_S42
+Tue Jun 27 15:49:39 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+183930 sequences (558.96 Mbp) processed in 5.010s (2203.0 Kseq/m, 6694.74 Mbp/m).
+  140189 sequences classified (76.22%)
+  43741 sequences unclassified (23.78%)
+ 
+Tue Jun 27 15:50:07 EDT 2023
+Cen19_11102016_R1_S43
+Tue Jun 27 15:50:07 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+98344 sequences (387.09 Mbp) processed in 4.803s (1228.5 Kseq/m, 4835.38 Mbp/m).
+  77847 sequences classified (79.16%)
+  20497 sequences unclassified (20.84%)
+ 
+Tue Jun 27 15:50:33 EDT 2023
+Cen19_19102017_R1_S44
+Tue Jun 27 15:50:33 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+89093 sequences (324.74 Mbp) processed in 4.489s (1190.8 Kseq/m, 4340.44 Mbp/m).
+  67456 sequences classified (75.71%)
+  21637 sequences unclassified (24.29%)
+ 
+Tue Jun 27 15:50:59 EDT 2023
+Cen19_02102018_R1_S45
+Tue Jun 27 15:50:59 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+117000 sequences (378.58 Mbp) processed in 4.784s (1467.4 Kseq/m, 4747.96 Mbp/m).
+  88778 sequences classified (75.88%)
+  28222 sequences unclassified (24.12%)
+ 
+Tue Jun 27 15:51:23 EDT 2023
+Cen19_06102019_R1_S46
+Tue Jun 27 15:51:23 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+118285 sequences (301.73 Mbp) processed in 4.051s (1752.1 Kseq/m, 4469.30 Mbp/m).
+  85875 sequences classified (72.60%)
+  32410 sequences unclassified (27.40%)
+ 
+Tue Jun 27 15:51:46 EDT 2023
+Cen19_13102020_R1_S47
+Tue Jun 27 15:51:46 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+102505 sequences (291.47 Mbp) processed in 4.142s (1484.9 Kseq/m, 4222.31 Mbp/m).
+  79146 sequences classified (77.21%)
+  23359 sequences unclassified (22.79%)
+ 
+Tue Jun 27 15:52:11 EDT 2023
+Cen19_05102021_R1_S48
+Tue Jun 27 15:52:11 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+120273 sequences (306.63 Mbp) processed in 4.186s (1723.8 Kseq/m, 4394.68 Mbp/m).
+  88880 sequences classified (73.90%)
+  31393 sequences unclassified (26.10%)
+ 
+Tue Jun 27 15:52:34 EDT 2023
+Cen21_12102015_R1_S49
+Tue Jun 27 15:52:34 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+107426 sequences (419.86 Mbp) processed in 5.307s (1214.5 Kseq/m, 4746.55 Mbp/m).
+  84407 sequences classified (78.57%)
+  23019 sequences unclassified (21.43%)
+ 
+Tue Jun 27 15:53:02 EDT 2023
+Cen21_11102016_R1_S50
+Tue Jun 27 15:53:02 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+138350 sequences (531.09 Mbp) processed in 5.699s (1456.5 Kseq/m, 5591.04 Mbp/m).
+  110697 sequences classified (80.01%)
+  27653 sequences unclassified (19.99%)
+ 
+Tue Jun 27 15:53:30 EDT 2023
+Cen21_19102017_R1_S51
+Tue Jun 27 15:53:30 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+107230 sequences (383.56 Mbp) processed in 4.749s (1354.8 Kseq/m, 4846.16 Mbp/m).
+  82733 sequences classified (77.15%)
+  24497 sequences unclassified (22.85%)
+ 
+Tue Jun 27 15:53:55 EDT 2023
+Cen21_02102018_R1_S52
+Tue Jun 27 15:53:55 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+131435 sequences (281.48 Mbp) processed in 7.327s (1076.4 Kseq/m, 2305.17 Mbp/m).
+  106265 sequences classified (80.85%)
+  25170 sequences unclassified (19.15%)
+ 
+Tue Jun 27 15:54:28 EDT 2023
+Cen21_06102019_R1_S53
+Tue Jun 27 15:54:28 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+136882 sequences (358.59 Mbp) processed in 4.505s (1822.9 Kseq/m, 4775.47 Mbp/m).
+  104961 sequences classified (76.68%)
+  31921 sequences unclassified (23.32%)
+ 
+Tue Jun 27 15:54:56 EDT 2023
+Cen21_13102020_R1_S54
+Tue Jun 27 15:54:56 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+117941 sequences (299.85 Mbp) processed in 4.595s (1540.1 Kseq/m, 3915.51 Mbp/m).
+  94250 sequences classified (79.91%)
+  23691 sequences unclassified (20.09%)
+ 
+Tue Jun 27 15:55:25 EDT 2023
+Cen21_05102021_R1_S55
+Tue Jun 27 15:55:25 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+163041 sequences (414.82 Mbp) processed in 5.320s (1838.7 Kseq/m, 4678.03 Mbp/m).
+  137455 sequences classified (84.31%)
+  25586 sequences unclassified (15.69%)
+ 
+Tue Jun 27 15:55:52 EDT 2023
+Cen22_12102015_R1_S56
+Tue Jun 27 15:55:52 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+85783 sequences (404.43 Mbp) processed in 4.599s (1119.1 Kseq/m, 5276.26 Mbp/m).
+  66236 sequences classified (77.21%)
+  19547 sequences unclassified (22.79%)
+ 
+Tue Jun 27 15:56:20 EDT 2023
+Cen22_11102016_R1_S57
+Tue Jun 27 15:56:20 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+108878 sequences (432.57 Mbp) processed in 4.993s (1308.4 Kseq/m, 5198.26 Mbp/m).
+  83946 sequences classified (77.10%)
+  24932 sequences unclassified (22.90%)
+ 
+Tue Jun 27 15:56:45 EDT 2023
+Cen22_20102017_R1_S58
+Tue Jun 27 15:56:45 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+163716 sequences (606.44 Mbp) processed in 5.446s (1803.7 Kseq/m, 6681.26 Mbp/m).
+  129339 sequences classified (79.00%)
+  34377 sequences unclassified (21.00%)
+ 
+Tue Jun 27 15:57:13 EDT 2023
+Cen22_03102018_R1_S59
+Tue Jun 27 15:57:13 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+191867 sequences (585.60 Mbp) processed in 5.735s (2007.4 Kseq/m, 6126.86 Mbp/m).
+  148727 sequences classified (77.52%)
+  43140 sequences unclassified (22.48%)
+ 
+Tue Jun 27 15:57:42 EDT 2023
+Cen22_06102019_R1_S60
+Tue Jun 27 15:57:42 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+142582 sequences (488.03 Mbp) processed in 4.913s (1741.4 Kseq/m, 5960.60 Mbp/m).
+  115024 sequences classified (80.67%)
+  27558 sequences unclassified (19.33%)
+ 
+Tue Jun 27 15:58:12 EDT 2023
+Cen22_13102020_R1_S61
+Tue Jun 27 15:58:12 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+152990 sequences (503.65 Mbp) processed in 4.962s (1849.8 Kseq/m, 6089.65 Mbp/m).
+  121343 sequences classified (79.31%)
+  31647 sequences unclassified (20.69%)
+ 
+Tue Jun 27 15:58:43 EDT 2023
+Cen22_07102021_R1_S62
+Tue Jun 27 15:58:43 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+152720 sequences (424.69 Mbp) processed in 5.019s (1825.8 Kseq/m, 5077.34 Mbp/m).
+  115141 sequences classified (75.39%)
+  37579 sequences unclassified (24.61%)
+ 
+Tue Jun 27 15:59:10 EDT 2023
+Cen23_13102015_R1_S63
+Tue Jun 27 15:59:10 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+71816 sequences (141.04 Mbp) processed in 2.507s (1718.7 Kseq/m, 3375.35 Mbp/m).
+  58344 sequences classified (81.24%)
+  13472 sequences unclassified (18.76%)
+ 
+Tue Jun 27 15:59:33 EDT 2023
+Cen23_12102016_R1_S64
+Tue Jun 27 15:59:33 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+116985 sequences (219.17 Mbp) processed in 3.045s (2305.1 Kseq/m, 4318.59 Mbp/m).
+  99149 sequences classified (84.75%)
+  17836 sequences unclassified (15.25%)
+ 
+Tue Jun 27 15:59:55 EDT 2023
+Cen23_21102017_R1_S65
+Tue Jun 27 15:59:55 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+83045 sequences (156.19 Mbp) processed in 9.917s (502.4 Kseq/m, 944.96 Mbp/m).
+  66712 sequences classified (80.33%)
+  16333 sequences unclassified (19.67%)
+ 
+Tue Jun 27 16:00:32 EDT 2023
+Cen23_04102018_R1_S66
+Tue Jun 27 16:00:32 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+19974 sequences (36.77 Mbp) processed in 0.775s (1547.1 Kseq/m, 2848.32 Mbp/m).
+  15793 sequences classified (79.07%)
+  4181 sequences unclassified (20.93%)
+ 
+Tue Jun 27 16:00:52 EDT 2023
+Cen23_07102019_R1_S67
+Tue Jun 27 16:00:52 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+83503 sequences (153.97 Mbp) processed in 2.562s (1955.8 Kseq/m, 3606.16 Mbp/m).
+  67645 sequences classified (81.01%)
+  15858 sequences unclassified (18.99%)
+ 
+Tue Jun 27 16:01:13 EDT 2023
+Cen23_15102020_R1_S68
+Tue Jun 27 16:01:13 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+52468 sequences (105.98 Mbp) processed in 1.924s (1636.2 Kseq/m, 3304.91 Mbp/m).
+  44924 sequences classified (85.62%)
+  7544 sequences unclassified (14.38%)
+ 
+Tue Jun 27 16:01:34 EDT 2023
+Cen23_06102021_R1_S69
+Tue Jun 27 16:01:34 EDT 2023
+ 
+Starting kracken2
+Loading database information... done.
+48122 sequences (88.67 Mbp) processed in 1.587s (1819.6 Kseq/m, 3352.94 Mbp/m).
+  38868 sequences classified (80.77%)
+  9254 sequences unclassified (19.23%)
+ 
+Tue Jun 27 16:01:53 EDT 2023
+ 
+ 
+Done with all sites!
+Tue Jun 27 16:01:53 EDT 2023

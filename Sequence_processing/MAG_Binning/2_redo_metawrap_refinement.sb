@@ -1,0 +1,41 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=metawrap_refine
+#SBATCH --time=72:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=10
+#SBATCH --mem=50G
+#SBATCH -A shade-cole-bonito
+#SBATCH --array=21,22,49,50,56,58
+#SBATCH --output=metawrap_refine.%A_%a.out
+
+########### Command lines ###########
+
+module load Conda/3
+conda activate metawrap_env
+
+config=full_sample_config.txt
+
+pfx1=$(awk -v ArrayTaskID=$SLURM_ARRAY_TASK_ID '$1==ArrayTaskID {print $2}' $config)
+
+echo "Starting refinement"
+echo ${pfx1}
+date
+echo " "
+echo " "
+
+metawrap bin_refinement \
+	-o /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/refined_bins/${pfx1} \
+	-t 10 \
+	-A /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/initial_bins/${pfx1}/metabat2_bins \
+	-B /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/initial_bins/${pfx1}/maxbin2_bins \
+	-C /mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/initial_bins/${pfx1}/concoct_bins \
+	-c 50 \
+	-x 10
+
+echo "Done!"
+date
+conda deactivate

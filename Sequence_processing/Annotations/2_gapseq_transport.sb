@@ -1,0 +1,30 @@
+#!/bin/bash
+
+########### Resource request ############
+
+#SBATCH --job-name=gapseq_transport
+#SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=20G
+#SBATCH --output=S2_gapseq_transport.out
+#SBATCH -A shade-cole-bonito
+
+########### Command lines ###########
+module purge
+module load Conda/3
+conda activate gapseq-dev
+
+echo "Begining gapseq find-transport"
+date
+
+/mnt/research/ShadeLab/Barnett/repo/gapseq/gapseq find-transport \
+	-K 1 \
+	/mnt/research/ShadeLab/Barnett/Centralia_metagenome/metawrap_binning/dRep_bins/dereplicated_genomes/Cen14_13102020_R1_S19_bin.17.fa
+
+echo " "
+echo " "
+echo "Done with all MAGs!"
+date
+conda deactivate
